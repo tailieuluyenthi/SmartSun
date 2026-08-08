@@ -146,16 +146,16 @@
     </div>
   </header>
 
-  <!-- HERO SECTION & LỜI MỞ ĐẦU THƯƠNG HIỆU UY TÍN -->
-  <section id="loi-mo-dau" class="relative overflow-hidden pt-10 pb-16 bg-grid-dot">
+  <!-- HERO SECTION -->
+  <section id="loi-mo-dau" class="relative overflow-hidden pt-12 pb-16 bg-grid-dot">
     
     <!-- Ambient Glow Lights -->
     <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] bg-amber-300/20 blur-[130px] rounded-full pointer-events-none"></div>
     <div class="absolute top-1/3 right-10 w-[350px] h-[350px] bg-emerald-400/20 blur-[110px] rounded-full pointer-events-none"></div>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
       
-      <!-- Trust Badges & Certifications Header -->
+      <!-- Trust Badges -->
       <div class="flex flex-wrap items-center justify-center gap-3 mb-8">
         <span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-amber-100/80 border border-amber-300 text-amber-900 text-xs font-extrabold uppercase tracking-wider shadow-sm">
           🏆 Nền tảng Trợ Lý AI
@@ -165,89 +165,20 @@
         </span>
       </div>
 
-      <!-- Main Headline & Split Content Grid -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+      <!-- Main Headline -->
+      <div class="space-y-6">
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight leading-[1.15]">
+          Khai Mở Sức Mạnh <br class="hidden sm:inline" />
+          <span class="bg-clip-text text-transparent bg-gradient-to-r from-amber-500 via-orange-500 to-emerald-600">Trí Tuệ Nhân Tạo</span> Cho Giáo Dục Việt Nam
+        </h1>
         
-        <!-- Left Column: Copy & Search -->
-        <div class="lg:col-span-7 text-left space-y-6">
-          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight leading-[1.15]">
-            Khai Mở Sức Mạnh <br class="hidden sm:inline" />
-            <span class="bg-clip-text text-transparent bg-gradient-to-r from-amber-500 via-orange-500 to-emerald-600">Trí Tuệ Nhân Tạo</span> Cho Giáo Dục Việt Nam
-          </h1>
-          
-          <p class="text-slate-600 text-base sm:text-lg leading-relaxed font-normal">
-            <strong class="text-slate-900 font-semibold">SmartSun AI</strong> tự hào là hệ sinh thái trợ lý trí tuệ nhân tạo toàn diện đồng hành cùng giáo viên, học sinh và sinh viên trên toàn quốc. Đơn giản hóa công việc soạn giáo án, tạo đề thi chuẩn GDPT, mô phỏng sinh động và trợ lý học tập 24/7.
-          </p>
-
-          <!-- Live Search & Category Chips -->
-          <div class="space-y-3 pt-2">
-            <div class="relative max-w-xl">
-              <input type="text" id="search-input" onkeyup="searchCards()" placeholder="🔍 Tìm kiếm công cụ AI (ví dụ: tạo đề thi, giải toán, hướng nghiệp...)" class="w-full pl-12 pr-28 py-4 bg-white/95 backdrop-blur-md rounded-2xl border border-slate-300 shadow-lg shadow-slate-200/50 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all" />
-              <button onclick="searchCards()" class="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs rounded-xl shadow transition">
-                Tìm kiếm
-              </button>
-            </div>
-
-            <!-- Quick Filter Chips -->
-            <div class="flex flex-wrap gap-2 text-xs font-semibold text-slate-600 pt-1">
-              <span class="text-slate-400 self-center text-[11px] font-bold uppercase tracking-wider">Lọc nhanh:</span>
-              <button onclick="filterCategory('all')" class="chip-btn active px-3 py-1.5 rounded-xl bg-slate-900 text-white shadow-sm hover:opacity-95 transition">Tất cả</button>
-              <button onclick="filterCategory('teacher')" class="chip-btn px-3 py-1.5 rounded-xl bg-white border border-slate-200 text-slate-700 hover:border-amber-400 transition">🍎 Cho Giáo viên</button>
-              <button onclick="filterCategory('student')" class="chip-btn px-3 py-1.5 rounded-xl bg-white border border-slate-200 text-slate-700 hover:border-emerald-400 transition">🎒 Học sinh & Sinh viên</button>
-              <button onclick="filterCategory('stem')" class="chip-btn px-3 py-1.5 rounded-xl bg-white border border-slate-200 text-slate-700 hover:border-purple-400 transition">🧪 STEM & Lab</button>
-              <button onclick="filterCategory('career')" class="chip-btn px-3 py-1.5 rounded-xl bg-white border border-slate-200 text-slate-700 hover:border-blue-400 transition">🧭 Hướng nghiệp</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Right Column: Interactive Live AI Simulator Preview Card -->
-        <div class="lg:col-span-5">
-          <div class="glass-card rounded-3xl p-6 border border-slate-200/80 shadow-2xl relative overflow-hidden group">
-            <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-amber-400/20 to-emerald-400/10 rounded-bl-full pointer-events-none"></div>
-            
-            <div class="flex items-center justify-between pb-4 border-b border-slate-100">
-              <div class="flex items-center gap-2">
-                <span class="w-3 h-3 rounded-full bg-red-400 inline-block"></span>
-                <span class="w-3 h-3 rounded-full bg-yellow-400 inline-block"></span>
-                <span class="w-3 h-3 rounded-full bg-green-400 inline-block"></span>
-                <span class="text-xs font-mono text-slate-400 ml-2">smartsun-ai-engine.v2026</span>
-              </div>
-              <span class="text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-md uppercase">LIVE AI PREVIEW</span>
-            </div>
-
-            <!-- Animated Output Canvas Box -->
-            <div class="mt-4 p-4 rounded-2xl bg-slate-900 text-slate-200 font-mono text-xs leading-relaxed space-y-3 min-h-[220px]">
-              <div class="text-amber-400 flex items-center justify-between border-b border-slate-800 pb-2">
-                <span>⚡ Yêu cầu sinh tự động:</span>
-                <span id="demo-tag" class="text-[10px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded">Đề Thi 15P</span>
-              </div>
-              
-              <div id="typewriter-text" class="text-slate-300 whitespace-pre-wrap">
-> SmartSun AI đang kết nối mô hình học tập...
-> Tự động tạo 5 câu trắc nghiệm Tiếng Anh GDPT...
-[1] What is the main benefit of Artificial Intelligence?
-A. Faster processing
-B. Slow answers
-✔ Đáp án đúng: A (Giải thích chi tiết đi kèm)
-              </div>
-            </div>
-
-            <!-- Switcher buttons for live demo -->
-            <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-              <span class="text-slate-500 font-medium text-[11px]">Thử mẫu prompt AI:</span>
-              <div class="flex gap-1.5">
-                <button onclick="switchDemo('exam')" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-amber-100 text-slate-700 font-semibold transition text-[11px]">📝 Đề Thi</button>
-                <button onclick="switchDemo('sim')" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-emerald-100 text-slate-700 font-semibold transition text-[11px]">🧪 Canvas</button>
-                <button onclick="switchDemo('lesson')" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-purple-100 text-slate-700 font-semibold transition text-[11px]">📚 Slide 5512</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
+        <p class="text-slate-600 text-base sm:text-lg leading-relaxed font-normal max-w-2xl mx-auto">
+          <strong class="text-slate-900 font-semibold">SmartSun AI</strong> tự hào là hệ sinh thái trợ lý trí tuệ nhân tạo toàn diện đồng hành cùng giáo viên, học sinh và sinh viên trên toàn quốc. Đơn giản hóa công việc soạn giáo án, tạo đề thi chuẩn GDPT, mô phỏng sinh động và trợ lý học tập 24/7.
+        </p>
       </div>
 
       <!-- Thống kê thương hiệu (Brand Proof Metrics) -->
-      <div id="thuong-hieu" class="mt-14 grid grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mx-auto">
+      <div id="thuong-hieu" class="mt-12 grid grid-cols-2 lg:grid-cols-4 gap-4 max-w-4xl mx-auto">
         <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm text-center transform hover:-translate-y-1 transition-transform">
           <div class="text-3xl sm:text-4xl font-black text-amber-500">1200+</div>
           <div class="text-xs font-semibold text-slate-500 mt-1">Giáo viên tin dùng</div>
@@ -282,10 +213,10 @@ B. Slow answers
       </div>
 
       <!-- CARDS CONTAINER -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto" id="cards-container">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto" id="cards-container">
         
         <!-- CÔNG CỤ 1: TRỢ LÝ TIẾNG ANH -->
-        <div data-category="teacher student" class="card-item group relative glass-card rounded-3xl p-6 hover-glow overflow-hidden flex flex-col justify-between shadow-lg border border-amber-200/80">
+        <div class="card-item group relative glass-card rounded-3xl p-6 hover-glow overflow-hidden flex flex-col justify-between shadow-lg border border-amber-200/80">
           <div class="absolute top-0 right-0 w-32 h-32 bg-amber-400/10 rounded-bl-full pointer-events-none group-hover:bg-amber-400/25 transition-all"></div>
           
           <div>
@@ -305,7 +236,7 @@ B. Slow answers
             <span class="text-[11px] font-bold text-amber-600">Chính xác</span>
           </div>
 
-          <!-- Hover Overlay Button "Truy Cập" -->
+          <!-- Hover Overlay Button -->
           <div class="absolute inset-0 bg-slate-900/85 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center p-6 text-center">
             <div class="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
               <h4 class="text-white font-bold text-base mb-2">Trợ Lý Tiếng Anh</h4>
@@ -318,7 +249,7 @@ B. Slow answers
         </div>
 
         <!-- CÔNG CỤ 2: SINH GIÁO ÁN PRO -->
-        <div data-category="teacher" class="card-item group relative glass-card rounded-3xl p-6 hover-glow overflow-hidden flex flex-col justify-between shadow-lg border border-emerald-200/80">
+        <div class="card-item group relative glass-card rounded-3xl p-6 hover-glow overflow-hidden flex flex-col justify-between shadow-lg border border-emerald-200/80">
           <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-400/10 rounded-bl-full pointer-events-none group-hover:bg-emerald-400/25 transition-all"></div>
           
           <div>
@@ -338,7 +269,7 @@ B. Slow answers
             <span class="text-[11px] font-bold text-emerald-600">Chuẩn CV 5512</span>
           </div>
 
-          <!-- Hover Overlay Button "Truy Cập" -->
+          <!-- Hover Overlay Button -->
           <div class="absolute inset-0 bg-slate-900/85 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center p-6 text-center">
             <div class="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
               <h4 class="text-white font-bold text-base mb-2">Sinh Giáo Án PRO</h4>
@@ -351,7 +282,7 @@ B. Slow answers
         </div>
 
         <!-- CÔNG CỤ 3: KHKT (KHOA HỌC KỸ THUẬT) -->
-        <div data-category="stem student teacher" class="card-item group relative glass-card rounded-3xl p-6 hover-glow overflow-hidden flex flex-col justify-between shadow-lg border border-purple-200/80">
+        <div class="card-item group relative glass-card rounded-3xl p-6 hover-glow overflow-hidden flex flex-col justify-between shadow-lg border border-purple-200/80">
           <div class="absolute top-0 right-0 w-32 h-32 bg-purple-400/10 rounded-bl-full pointer-events-none group-hover:bg-purple-400/25 transition-all"></div>
           
           <div>
@@ -371,7 +302,7 @@ B. Slow answers
             <span class="text-[11px] font-bold text-purple-600">Sáng Tạo</span>
           </div>
 
-          <!-- Hover Overlay Button "Truy Cập" -->
+          <!-- Hover Overlay Button -->
           <div class="absolute inset-0 bg-slate-900/85 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center p-6 text-center">
             <div class="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
               <h4 class="text-white font-bold text-base mb-2">Trợ Lý KHKT</h4>
@@ -384,7 +315,7 @@ B. Slow answers
         </div>
 
         <!-- CÔNG CỤ 4: ĐỊNH HƯỚNG NGÀNH NGHỀ -->
-        <div data-category="career student" class="card-item group relative glass-card rounded-3xl p-6 hover-glow overflow-hidden flex flex-col justify-between shadow-lg border border-blue-200/80">
+        <div class="card-item group relative glass-card rounded-3xl p-6 hover-glow overflow-hidden flex flex-col justify-between shadow-lg border border-blue-200/80">
           <div class="absolute top-0 right-0 w-32 h-32 bg-blue-400/10 rounded-bl-full pointer-events-none group-hover:bg-blue-400/25 transition-all"></div>
           
           <div>
@@ -404,7 +335,7 @@ B. Slow answers
             <span class="text-[11px] font-bold text-blue-600">Cá nhân hóa</span>
           </div>
 
-          <!-- Hover Overlay Button "Truy Cập" -->
+          <!-- Hover Overlay Button -->
           <div class="absolute inset-0 bg-slate-900/85 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center p-6 text-center">
             <div class="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
               <h4 class="text-white font-bold text-base mb-2">Định Hướng Ngành Nghề</h4>
@@ -416,81 +347,73 @@ B. Slow answers
           </div>
         </div>
 
+        <!-- CÔNG CỤ 5: TẠO BÀI KIỂM TRA ONLINE TỰ ĐỘNG (MỚI THÊM) -->
+        <div class="card-item group relative glass-card rounded-3xl p-6 hover-glow overflow-hidden flex flex-col justify-between shadow-lg border border-red-200/80">
+          <div class="absolute top-0 right-0 w-32 h-32 bg-red-400/10 rounded-bl-full pointer-events-none group-hover:bg-red-400/25 transition-all"></div>
+          
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="px-3 py-1 rounded-full text-[10px] font-extrabold bg-red-100 text-red-800 uppercase tracking-wider">Hệ Thống Đánh Giá</span>
+              <span class="text-2xl">📝</span>
+            </div>
+            
+            <h3 class="text-xl font-bold text-slate-900 group-hover:text-red-600 transition-colors">Công Cụ Tạo Bài Kiểm Tra Online Tự Động</h3>
+            <p class="text-slate-600 text-xs mt-2 leading-relaxed">
+              Khởi tạo đề thi trắc nghiệm & tự luận online, hỗ trợ chấm điểm tự động, xuất báo cáo kết quả và quản lý học sinh thông minh.
+            </p>
+          </div>
+
+          <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
+            <span class="text-[11px] text-slate-400 font-semibold">Trạng thái: Cao cấp</span>
+            <span class="text-[11px] font-bold text-red-600">Liên hệ Admin</span>
+          </div>
+
+          <!-- Hover Overlay Button mở Modal Liên hệ Admin -->
+          <div class="absolute inset-0 bg-slate-900/85 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center p-6 text-center">
+            <div class="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+              <h4 class="text-white font-bold text-base mb-2">Bài Kiểm Tra Online Tự Động</h4>
+              <p class="text-slate-300 text-xs mb-5 max-w-xs mx-auto">Chức năng cao cấp dành riêng cho trường học & trung tâm.</p>
+              <button onclick="openAdminContactModal()" class="px-6 py-3 bg-gradient-to-r from-red-500 to-rose-600 text-white font-bold text-xs rounded-xl shadow-lg hover:scale-105 transition-transform flex items-center gap-2 mx-auto justify-center">
+                🚀 Truy Cập Công Cụ ➔
+              </button>
+            </div>
+          </div>
+        </div>
+
       </div>
 
     </div>
   </section>
 
-  <!-- DRAWER / MODAL CHẠY CÔNG CỤ TƯƠNG TÁC KHI NHẤN "TRUY CẬP" -->
-  <div id="tool-runner-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-50 flex items-center justify-center p-3 sm:p-6 hidden">
-    <div class="bg-white rounded-3xl max-w-4xl w-full h-[90vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden relative">
+  <!-- MODAL THÔNG BÁO LIÊN HỆ ADMIN CHO CÔNG CỤ TẠO BÀI KIỂM TRA ONLINE -->
+  <div id="admin-contact-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 text-center shadow-2xl border border-slate-200 relative animate-float">
       
-      <!-- Modal Header -->
-      <div class="px-6 py-4 bg-slate-900 text-white flex justify-between items-center border-b border-slate-800">
-        <div class="flex items-center gap-3">
-          <div id="modal-tool-icon" class="w-10 h-10 bg-amber-500 text-slate-900 rounded-xl flex items-center justify-center font-bold text-xl">✨</div>
-          <div>
-            <h3 id="modal-tool-title" class="font-bold text-base text-white">Tên Công Cụ SmartSun</h3>
-            <p id="modal-tool-sub" class="text-xs text-slate-400">Tự động hóa xử lý nội dung thông minh</p>
-          </div>
-        </div>
-        <button onclick="closeToolModal()" class="text-slate-400 hover:text-white text-2xl font-bold px-2">✕</button>
+      <button onclick="closeAdminContactModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 text-xl font-bold">✕</button>
+      
+      <div class="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center text-3xl mx-auto mb-4 border border-red-200 shadow-sm">
+        🔒
       </div>
 
-      <!-- Modal Body (Input + Output Area) -->
-      <div class="flex-1 overflow-y-auto p-6 space-y-6 bg-slate-50 custom-scrollbar">
-        
-        <!-- Controls Inputs -->
-        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label class="block text-xs font-bold text-slate-700 mb-1">Môn học / Lĩnh vực</label>
-              <select id="tool-param-subject" class="w-full border rounded-xl p-2.5 text-xs bg-slate-50 font-medium outline-none focus:ring-2 focus:ring-amber-500">
-                <option value="Tiếng Anh">Tiếng Anh</option>
-                <option value="Vật Lý">Vật Lý</option>
-                <option value="Hóa Học">Hóa Học</option>
-                <option value="Toán Học">Toán Học</option>
-                <option value="Ngữ Văn">Ngữ Văn / Lịch Sử</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-700 mb-1">Cấp học / Trình độ</label>
-              <select id="tool-param-level" class="w-full border rounded-xl p-2.5 text-xs bg-slate-50 font-medium outline-none focus:ring-2 focus:ring-amber-500">
-                <option value="Học sinh THPT">Học sinh THPT</option>
-                <option value="Giáo viên THCS/THPT">Giáo viên THCS/THPT</option>
-                <option value="Sinh viên Đại học">Sinh viên Đại học</option>
-              </select>
-            </div>
-          </div>
+      <h3 class="text-xl font-extrabold text-slate-900 mb-2">Yêu Cầu Quyền Truy Cập</h3>
+      <p class="text-xs text-slate-600 leading-relaxed mb-6">
+        Chức năng <strong class="text-slate-800">Tạo Bài Kiểm Tra Online Tự Động</strong> cần được cấp quyền quản trị viên. Vui lòng liên hệ Admin để nhận kích hoạt hệ thống.
+      </p>
 
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">Yêu cầu nội dung chi tiết *</label>
-            <textarea id="tool-param-prompt" rows="3" placeholder="Nhập chủ đề hoặc đề bài chi tiết..." class="w-full border rounded-xl p-3 text-xs focus:ring-2 focus:ring-amber-500 outline-none"></textarea>
-          </div>
-
-          <button onclick="runAiTool()" id="btn-run-ai" class="w-full py-3.5 bg-gradient-to-r from-amber-500 to-emerald-600 hover:opacity-95 text-white font-bold text-xs rounded-xl shadow-md transition-all flex justify-center items-center gap-2">
-            🚀 BẮT ĐẦU TẠO NỘI DUNG VỚI SMARTSUN AI
-          </button>
+      <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 mb-6 space-y-2 text-left text-xs">
+        <div class="flex items-center justify-between text-slate-700">
+          <span class="font-bold">Quản trị viên:</span>
+          <span>SmartSun Admin</span>
         </div>
-
-        <!-- Result Container -->
-        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3 min-h-[260px]">
-          <div class="flex flex-wrap justify-between items-center border-b pb-3 gap-2">
-            <span class="text-xs font-bold text-slate-700 flex items-center gap-1.5">
-              <span>📄</span> KẾT QUẢ XỬ LÝ TỰ ĐỘNG
-            </span>
-            <div class="flex gap-3 text-xs font-bold">
-              <button onclick="copyModalOutput()" class="text-amber-600 hover:underline flex items-center gap-1">📋 Sao chép</button>
-              <button onclick="exportModalWord()" class="text-emerald-600 hover:underline flex items-center gap-1">📥 Tải Word</button>
-            </div>
-          </div>
-          
-          <div id="modal-output-content" class="text-xs text-slate-800 leading-relaxed font-sans whitespace-pre-wrap bg-slate-50 p-4 rounded-xl border border-slate-100">
-Nhấn "BẮT ĐẦU TẠO NỘI DUNG VỚI SMARTSUN AI" để khởi tạo tài liệu mẫu...
-          </div>
+        <div class="flex items-center justify-between text-slate-700">
+          <span class="font-bold">Hỗ trợ Zalo:</span>
+          <span class="font-mono text-amber-600 font-bold">0799.457.***</span>
         </div>
-
       </div>
+
+      <a href="https://zalo.me/0799457172" target="_blank" class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-lg transition-all flex items-center justify-center gap-2">
+        💬 LIÊN HỆ NGAY QUA ZALO
+      </a>
     </div>
   </div>
 
@@ -637,154 +560,13 @@ Nhấn "BẮT ĐẦU TẠO NỘI DUNG VỚI SMARTSUN AI" để khởi tạo tài
   </footer>
 
   <script>
-    // State Variables
-    let currentToolKey = '';
-
-    // Tool Data Presets
-    const toolPresets = {
-      exam: {
-        title: 'Tạo Đề Thi & Đáp Án Chuẩn GDPT',
-        icon: '📝',
-        prompt: 'Tạo 5 câu hỏi trắc nghiệm Tiếng Anh lớp 12 chủ đề "Artificial Intelligence" kèm đáp án và giải thích chi tiết.'
-      },
-      simulation: {
-        title: 'Trợ Lý Tạo Mô Phỏng Canvas HTML5',
-        icon: '🧪',
-        prompt: 'Tạo mô phỏng Vật Lý 10 chủ đề "Ném Xiên" có thanh điều chỉnh Vận tốc v0 và Góc ném alpha.'
-      },
-      lesson: {
-        title: 'Soạn Giáo Án Chuẩn Công Văn 5512',
-        icon: '📚',
-        prompt: 'Soạn tiến trình dạy học bài "Định luật Ohm" môn Vật lý lớp 9 gồm Mục tiêu, Thiết bị và Các hoạt động học tập.'
-      }
-    };
-
-    // Live Demo Text Switcher
-    function switchDemo(type) {
-      const el = document.getElementById('typewriter-text');
-      const tag = document.getElementById('demo-tag');
-
-      if (type === 'exam') {
-        tag.innerText = 'Đề Thi 15P';
-        el.innerText = `> SmartSun AI đang kết nối mô hình học tập...
-> Tự động tạo 5 câu trắc nghiệm Tiếng Anh GDPT...
-[1] What is the main benefit of Artificial Intelligence?
-A. Faster processing    B. Slow answers
-✔ Đáp án đúng: A (Giải thích chi tiết đi kèm)`;
-      } else if (type === 'sim') {
-        tag.innerText = 'STEM Canvas';
-        el.innerText = `> Khởi tạo Canvas mô phỏng Chuyển động Ném Xiên...
-> Cấu hình tham số: v0 = 50 m/s, Alpha = 45 độ, g = 9.8 m/s²
-✔ Mã HTML5 tương tác đã sẵn sàng render trên trình duyệt!`;
-      } else if (type === 'lesson') {
-        tag.innerText = 'Giáo Án 5512';
-        el.innerText = `> Lập kế hoạch bài dạy môn Vật lý 10...
-> Cấu trúc: 1. Mục tiêu -> 2. Thiết bị -> 3. Tiến trình dạy học
-✔ Đã hoàn thành kịch bản slide PowerPoint 12 trang!`;
-      }
+    // Modal Admin Contact Handlers
+    function openAdminContactModal() {
+      document.getElementById('admin-contact-modal').classList.remove('hidden');
     }
 
-    // Live Search & Category Filter Cards
-    function searchCards() {
-      const query = document.getElementById('search-input').value.toLowerCase();
-      const cards = document.querySelectorAll('.card-item');
-
-      cards.forEach(card => {
-        const text = card.innerText.toLowerCase();
-        if (text.includes(query)) {
-          card.style.display = 'flex';
-        } else {
-          card.style.display = 'none';
-        }
-      });
-    }
-
-    function filterCategory(category) {
-      document.querySelectorAll('.chip-btn').forEach(btn => {
-        btn.classList.remove('bg-slate-900', 'text-white');
-        btn.classList.add('bg-white', 'text-slate-700');
-      });
-      if (event && event.target) {
-        event.target.classList.remove('bg-white', 'text-slate-700');
-        event.target.classList.add('bg-slate-900', 'text-white');
-      }
-
-      const cards = document.querySelectorAll('.card-item');
-      cards.forEach(card => {
-        const cats = card.getAttribute('data-category') || '';
-        if (category === 'all' || cats.includes(category)) {
-          card.style.display = 'flex';
-        } else {
-          card.style.display = 'none';
-        }
-      });
-    }
-
-    // Launch Tool Modal
-    function launchTool(toolKey) {
-      currentToolKey = toolKey;
-      const tool = toolPresets[toolKey];
-
-      document.getElementById('modal-tool-icon').innerText = tool.icon;
-      document.getElementById('modal-tool-title').innerText = tool.title;
-      document.getElementById('tool-param-prompt').value = tool.prompt;
-      document.getElementById('modal-output-content').innerText = 'Sẵn sàng! Nhấn nút "BẮT ĐẦU TẠO NỘI DUNG VỚI SMARTSUN AI" bên trên...';
-
-      document.getElementById('tool-runner-modal').classList.remove('hidden');
-    }
-
-    function closeToolModal() {
-      document.getElementById('tool-runner-modal').classList.add('hidden');
-    }
-
-    // Run AI Tool
-    async function runAiTool() {
-      const subject = document.getElementById('tool-param-subject').value;
-      const level = document.getElementById('tool-param-level').value;
-      const userPrompt = document.getElementById('tool-param-prompt').value;
-      const outputEl = document.getElementById('modal-output-content');
-
-      if (!userPrompt.trim()) {
-        alert('Vui lòng nhập yêu cầu nội dung!');
-        return;
-      }
-
-      outputEl.innerText = '⏳ SmartSun AI đang suy luận và khởi tạo tài liệu...';
-
-      setTimeout(() => {
-        outputEl.innerText = `[SMARTSUN AI - KẾT QUẢ XỬ LÝ MẪU BẰNG AI ENGINE]
-
-Môn: ${subject} | Trình độ: ${level}
-Nội dung yêu cầu: "${userPrompt}"
-
---------------------------------------------------
-SẢN PHẨM HOÀN THÀNH:
-1. TỔNG QUAN KIẾN THỨC CỐT LÕI:
-- Phân tích và cô đọng các nội dung trọng tâm.
-- Đảm bảo cấu trúc sư phạm khoa học và logic.
-
-2. CHI TIẾT NỘI DUNG & ĐÁP ÁN:
-- Phần 1: Các câu hỏi trắc nghiệm / dàn ý chi tiết.
-- Phần 2: Hướng dẫn giải từng bước và phương pháp ghi nhớ.
-- Phần 3: Đánh giá phân hóa cấp độ tư duy.
-
-(💡 SmartSun AI luôn sẵn sàng đồng hành cùng bạn trên con đường nâng cao tri thức!)`;
-      }, 1000);
-    }
-
-    function copyModalOutput() {
-      const text = document.getElementById('modal-output-content').innerText;
-      document.execCommand('copy');
-      alert('Đã sao chép nội dung vào Clipboard!');
-    }
-
-    function exportModalWord() {
-      const text = document.getElementById('modal-output-content').innerText;
-      const blob = new Blob([text], { type: 'application/msword' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = 'SmartSun_TaiLieu_AI.doc';
-      a.click();
+    function closeAdminContactModal() {
+      document.getElementById('admin-contact-modal').classList.add('hidden');
     }
 
     function subscribeNewsletter() {
@@ -813,7 +595,7 @@ SẢN PHẨM HOÀN THÀNH:
       setTimeout(() => {
         const aiMsg = document.createElement('div');
         aiMsg.className = 'bg-slate-100 p-2.5 rounded-xl text-slate-700 max-w-[85%]';
-        aiMsg.innerText = `SmartSun AI: Tôi đã ghi nhận câu hỏi "${text}". Bạn có thể chọn cụ thể các khối công cụ bên trên để nhận tài liệu hoàn chỉnh nhé!`;
+        aiMsg.innerText = `SmartSun AI: Tôi đã ghi nhận câu hỏi "${text}". Bạn có thể chọn cụ thể các khối công cụ bên trên để trải nghiệm nhé!`;
         messages.appendChild(aiMsg);
         messages.scrollTop = messages.scrollHeight;
       }, 600);
