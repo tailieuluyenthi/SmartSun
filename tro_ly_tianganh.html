@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="vi" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TRỢ LÝ TIẾNG ANH CHUYÊN NGHIỆP AI - Groq Engine</title>
+  <meta name="description" content="Công cụ AI tạo đề thi Tiếng Anh chuẩn GDPT 2025/2026 cho Tiểu học, THCS và THPT với Groq Cloud AI." />
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    body { font-family: 'Be Vietnam Pro', sans-serif; background-color: #f8fafc; color: #1e293b; }
+    .active-tab { border-bottom: 3px solid #10b981; color: #059669; font-weight: 700; background-color: #ecfdf5; }
+    
+    @media print {
+      body * { visibility: hidden; }
+      #exam-document, #exam-document * { visibility: visible; }
+      #exam-document { position: absolute; left: 0; top: 0; width: 100%; border: none !important; box-shadow: none !important; }
+      .no-print { display: none !important; }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-emerald-500 selection:text-white">
+
+  <!-- HEADER -->
+  <header class="bg-white border-b border-slate-200 px-4 sm:px-8 py-3 flex justify-between items-center sticky top-0 z-50 shadow-sm">
+    <div class="flex items-center gap-3">
+      <div class="bg-gradient-to-tr from-emerald-600 to-teal-500 text-white w-10 h-10 rounded-xl flex items-center justify-center font-extrabold text-xl shadow-md">
+        文A
+      </div>
+      <div>
+        <h1 class="text-base font-extrabold tracking-tight flex items-center gap-2">
+          <span class="text-emerald-600">TRỢ LÝ TIẾNG ANH AI</span>
+          <span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-300 uppercase">Groq 2026</span>
+        </h1>
+        <p class="text-[11px] text-slate-500">Tạo Đề Thi & Bài Tập Tương Tác Chuẩn GDPT 2025/2026</p>
+      </div>
+    </div>
+    
+    <div class="flex items-center gap-2">
+      <button onclick="toggleApiModal()" class="flex items-center gap-1.5 text-xs font-semibold bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 px-3 py-2 rounded-xl transition active:scale-95">
+        <i data-lucide="key" class="w-4 h-4 text-amber-600"></i>
+        <span class="hidden sm:inline">Cấu hình Groq API Key</span>
+      </button>
+
+      <div id="preview-actions" class="hidden flex items-center gap-2">
+        <button onclick="switchMode('teacher')" id="btn-mode-teacher" class="text-xs font-bold px-3 py-2 rounded-xl border border-emerald-600 bg-emerald-600 text-white shadow transition">
+          📄 Mẫu Đề In
+        </button>
+        <button onclick="switchMode('student')" id="btn-mode-student" class="text-xs font-bold px-3 py-2 rounded-xl border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 transition">
+          ✏️ Thi Online
+        </button>
+        <button onclick="backToForm()" class="text-slate-600 text-xs font-semibold px-3 py-2 border rounded-xl hover:bg-slate-100 transition">
+          ↩️ Đổi tham số
+        </button>
+        <button onclick="window.print()" class="bg-slate-800 hover:bg-slate-700 text-white text-xs px-3 py-2 rounded-xl font-medium transition shadow">
+          🖨️ In / PDF
+        </button>
+        <button onclick="exportToWord()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-3 py-2 rounded-xl font-medium transition shadow cursor-pointer">
+          📥 Xuất Word (.doc)
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MODAL CẤU HÌNH GROQ API -->
+  <div id="api-modal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-100 text-left space-y-4">
+      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+        <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+          <i data-lucide="cpu" class="w-5 h-5 text-emerald-600"></i> Cấu Hình Groq Cloud API
+        </h3>
+        <button onclick="toggleApiModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x"></i></button>
+      </div>
+      
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Groq API Key (gsk_...):</label>
+          <input type="password" id="api-key-input" placeholder="Dán Groq API Key vào đây..." class="w-full border rounded-xl p-2.5 font-mono text-slate-800 focus:ring-2 focus:ring-emerald-500 outline-none" />
+          <p class="text-[11px] text-slate-400 mt-1.5">
+            Lấy API Key miễn phí tại: <a href="https://console.groq.com/keys" target="_blank" class="text-emerald-600 font-bold hover:underline">console.groq.com</a>. Nếu không nhập, ứng dụng sẽ dùng kênh dự phòng miễn phí.
+          </p>
+        </div>
+      </div>
+
+      <div class="pt-2 flex justify-end gap-2">
+        <button onclick="toggleApiModal()" class="px-4 py-2 text-xs font-medium text-slate-500 hover:bg-slate-100 rounded-xl">Đóng</button>
+        <button onclick="saveApiKey()" class="px-4 py-2 text-xs font-bold bg-emerald-600 text-white rounded-xl hover:bg-emerald-500 shadow">Lưu Groq Key</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIEW 1: FORM THAM SỐ TẠO ĐỀ -->
+  <main id="view-form" class="max-w-4xl mx-auto my-8 px-4 space-y-6">
+    
+    <div class="text-center space-y-2">
+      <div class="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center text-2xl mx-auto shadow-inner font-extrabold">
+        文A
+      </div>
+      <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
+        Khởi Tạo Đề Thi Tiếng Anh <span class="text-emerald-600">Groq AI</span>
+      </h2>
+      <p class="text-slate-500 text-xs sm:text-sm">Tự động biên soạn theo chuẩn ma trận kiến thức GDPT mới nhất</p>
+    </div>
+
+    <div class="bg-white rounded-3xl shadow-sm border border-slate-200/80 overflow-hidden text-left">
+      <!-- Tabs Cấp Học -->
+      <div class="flex border-b border-slate-200 text-center font-bold text-xs sm:text-sm text-slate-500">
+        <button onclick="switchTab('primary', event)" class="flex-1 py-4 hover:text-emerald-600 transition">TIỂU HỌC (3 - 5)</button>
+        <button onclick="switchTab('secondary', event)" class="flex-1 py-4 active-tab transition">THCS (6 - 9)</button>
+        <button onclick="switchTab('high', event)" class="flex-1 py-4 hover:text-emerald-600 transition">THPT (10 - 12)</button>
+      </div>
+
+      <div class="p-6 space-y-6">
+        
+        <!-- ROW 1 -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">🏫 Khối Lớp</label>
+            <select id="grade-select" class="w-full border border-slate-300 rounded-xl p-2.5 bg-white text-slate-800 focus:ring-2 focus:ring-emerald-500 text-xs font-bold outline-none">
+              <option value="Lớp 6">Lớp 6</option>
+              <option value="Lớp 7">Lớp 7</option>
+              <option value="Lớp 8" selected>Lớp 8</option>
+              <option value="Lớp 9">Lớp 9</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">⏰ Thời Gian Làm Bài</label>
+            <select id="time-select" class="w-full border border-slate-300 rounded-xl p-2.5 bg-white text-slate-800 focus:ring-2 focus:ring-emerald-500 text-xs font-bold outline-none">
+              <option value="15 phút">15 phút (Bài kiểm tra ngắn)</option>
+              <option value="45 phút">45 phút (Kiểm tra định kỳ)</option>
+              <option value="60 phút" selected>60 phút (Đề thi Học kỳ)</option>
+              <option value="90 phút">90 phút (Ôn thi Vào 10 / THPT QG)</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">🎯 Mục Đích Đề Thi</label>
+            <select id="purpose-select" class="w-full border border-slate-300 rounded-xl p-2.5 bg-white text-slate-800 focus:ring-2 focus:ring-emerald-500 text-xs font-bold outline-none">
+              <option value="Giữa Học Kỳ 1">Kiểm tra Giữa Kỳ 1</option>
+              <option value="Cuối Học Kỳ 1">Kiểm tra Cuối Kỳ 1</option>
+              <option value="Giữa Học Kỳ 2">Kiểm tra Giữa Kỳ 2</option>
+              <option value="Cuối Học Kỳ 2">Kiểm tra Cuối Kỳ 2</option>
+              <option value="Ôn Thi Chuyên / Tuyển Sinh">Ôn Thi Học Sinh Giỏi / Vào 10</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- ROW 2 -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label class="text-xs font-bold text-slate-700 mb-1 block">🔢 Số Lượng Câu Hỏi</label>
+            <select id="num-questions" class="w-full border border-slate-300 rounded-xl p-2.5 text-xs font-bold bg-white focus:ring-2 focus:ring-emerald-500 outline-none">
+              <option value="10">10 câu (Nhanh)</option>
+              <option value="20" selected>20 câu (Chuẩn)</option>
+              <option value="30">30 câu (Nâng cao)</option>
+              <option value="40">40 câu (Đề tổng hợp)</option>
+            </select>
+          </div>
+
+          <div class="md:col-span-2">
+            <label class="text-xs font-bold text-slate-700 mb-1 block">🔥 Chủ Đề Bài Học / Từ Vựng Trọng Tâm</label>
+            <select id="topic-select" class="w-full border border-emerald-300 rounded-xl p-2.5 bg-emerald-50/50 text-emerald-900 font-bold focus:ring-2 focus:ring-emerald-500 text-xs outline-none">
+              <option value="Tự động bám sát chương trình sách giáo khoa GDPT">Tự động tổng hợp theo chương trình GDPT mới</option>
+              <option value="Life & Hobbies (Cuộc sống & Sở thích)">Life & Hobbies (Cuộc sống & Sở thích)</option>
+              <option value="Environment & Protection (Môi trường & Bảo vệ tự nhiên)">Environment & Protection (Môi trường)</option>
+              <option value="Technology & Science (Khoa học & Công nghệ hiện đại)">Technology & Science (Công nghệ)</option>
+              <option value="Education & School Life (Trường học & Giáo dục)">Education & School Life (Giáo dục)</option>
+              <option value="Global Success / Friends Plus Topics">Chủ đề Sách Global Success / Friends Plus</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- YÊU CẦU BỔ SUNG -->
+        <div>
+          <label class="text-xs font-bold text-slate-700 mb-1 block">📝 Yêu Cầu Ma Trận Bổ Sung (Tùy chọn):</label>
+          <input id="custom-prompt" type="text" placeholder="Ví dụ: Tăng cường bài đọc điền từ, tập trung vào thì Quá khứ đơn và Thụ động..." class="w-full border border-slate-300 rounded-xl p-3 text-xs focus:ring-2 focus:ring-emerald-500 outline-none" />
+        </div>
+
+        <button onclick="generateExamWithAI()" id="btn-generate" class="w-full py-4 bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold text-sm sm:text-base rounded-2xl shadow-lg shadow-emerald-600/20 transition transform active:scale-95 flex justify-center items-center gap-2 cursor-pointer">
+          <i data-lucide="sparkles" class="w-5 h-5"></i>
+          <span>BIÊN SOẠN ĐỀ THI BẰNG GROQ AI</span>
+        </button>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- LOADING ANIMATION -->
+  <div id="view-loading" class="hidden text-center py-20 space-y-4">
+    <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-emerald-600 border-t-transparent shadow-lg"></div>
+    <h3 class="text-lg font-bold text-slate-800">Groq AI Đang Biên Soạn Đề Thi...</h3>
+    <p class="text-xs text-slate-500">Quá trình này chỉ mất khoảng 2 - 3 giây</p>
+  </div>
+
+  <!-- VIEW 2: KẾT QUẢ ĐỀ THI & ĐÁP ÁN -->
+  <main id="view-preview" class="hidden max-w-[1400px] mx-auto my-6 px-4 grid grid-cols-1 lg:grid-cols-12 gap-6 text-left">
+    
+    <!-- ĐỀ THI CHÍNH (BÊN TRÁI) -->
+    <div id="exam-document" class="lg:col-span-7 bg-white p-6 sm:p-10 rounded-3xl border border-slate-200 shadow-sm space-y-6">
+      
+      <!-- ĐẦU TRANG MẪU SỞ / TRƯỜNG -->
+      <div class="flex justify-between text-center text-xs font-bold leading-relaxed border-b border-slate-300 pb-4">
+        <div>
+          <p class="uppercase">SỞ GIÁO DỤC VÀ ĐÀO TẠO</p>
+          <p class="font-normal text-slate-500">TRƯỜNG THCS / THPT DEMO</p>
+          <p class="font-normal text-slate-400">--------------------</p>
+        </div>
+        <div>
+          <p id="out-exam-title" class="text-emerald-700 text-sm font-extrabold uppercase">ĐỀ KIỂM TRA MÔN TIẾNG ANH</p>
+          <p id="out-exam-sub" class="font-normal italic text-slate-500">Thời gian làm bài: 60 phút</p>
+        </div>
+      </div>
+
+      <div class="flex justify-between items-center text-xs border-b border-slate-100 pb-3">
+        <div class="space-y-1.5 text-slate-600">
+          <p>Họ và tên thí sinh: ............................................................................</p>
+          <p>Lớp / Số báo danh: ........................................................................</p>
+        </div>
+        <div class="border-2 border-slate-800 p-2.5 text-center font-extrabold rounded-lg">
+          MÃ ĐỀ: 102
+        </div>
+      </div>
+
+      <!-- DANH SÁCH CÂU HỎI -->
+      <div id="out-questions-container" class="space-y-6 text-xs sm:text-sm"></div>
+
+      <!-- NÚT NỘP BÀI KHI Ở CHẾ ĐỘ HỌC SINH -->
+      <div id="student-submit-area" class="hidden pt-6 border-t border-slate-200 text-center">
+        <button onclick="gradeStudentExam()" class="px-8 py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-sm rounded-2xl shadow-lg shadow-emerald-600/20 transition active:scale-95 cursor-pointer">
+          💯 NỘP BÀI VÀ XEM ĐIỂM
+        </button>
+      </div>
+
+    </div>
+
+    <!-- BẢNG ĐÁP ÁN & GIẢI THÍCH (BÊN PHẢI) -->
+    <div id="answer-sidebar" class="lg:col-span-5 bg-white p-6 rounded-3xl border border-slate-200 shadow-sm h-fit sticky top-20 space-y-4">
+      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+        <div class="flex items-center gap-2 text-emerald-700 font-extrabold text-sm">
+          <i data-lucide="check-circle" class="w-4 h-4 text-emerald-600"></i>
+          <span>Đáp Án & Giải Thích Ngữ Pháp</span>
+        </div>
+        <span class="bg-emerald-50 text-emerald-700 text-[11px] font-bold px-2.5 py-1 rounded-full border border-emerald-200">
+          Groq AI Auto-Graded
+        </span>
+      </div>
+
+      <!-- ĐIỂM SỐ KHI LÀM ONLINE -->
+      <div id="student-score-box" class="hidden p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-center space-y-1">
+        <h4 class="font-extrabold text-xs text-emerald-800 uppercase tracking-wider">KẾT QUẢ BÀI THI</h4>
+        <div id="student-score-val" class="text-3xl font-black text-emerald-600">0 / 10</div>
+        <p id="student-score-msg" class="text-xs text-emerald-700 font-semibold"></p>
+      </div>
+
+      <div id="out-answers-container" class="space-y-3 max-h-[70vh] overflow-y-auto pr-1"></div>
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-500 mt-auto">
+    <p>&copy; 2026 TRỢ LÝ TIẾNG ANH CHUYÊN NGHIỆP AI — Groq Engine 4.0</p>
+  </footer>
+
+  <!-- ENGINE CODE -->
+  <script>
+    lucide.createIcons();
+
+    let groqKey = localStorage.getItem('groq_api_key') || '';
+    let generatedExamData = null;
+    let currentMode = 'teacher'; // 'teacher' hoặc 'student'
+    let studentAnswers = {};
+
+    document.getElementById('api-key-input').value = groqKey;
+
+    function toggleApiModal() {
+      document.getElementById('api-modal').classList.toggle('hidden');
+      document.getElementById('api-modal').classList.toggle('flex');
+    }
+
+    function saveApiKey() {
+      groqKey = document.getElementById('api-key-input').value.trim();
+      localStorage.setItem('groq_api_key', groqKey);
+      alert('Đã lưu Groq API Key thành công!');
+      toggleApiModal();
+    }
+
+    function switchTab(level, event) {
+      document.querySelectorAll('.active-tab').forEach(el => el.classList.remove('active-tab'));
+      event.target.classList.add('active-tab');
+
+      const gradeSelect = document.getElementById('grade-select');
+      gradeSelect.innerHTML = '';
+      let list = level === 'primary' ? ['Lớp 3', 'Lớp 4', 'Lớp 5'] : level === 'secondary' ? ['Lớp 6', 'Lớp 7', 'Lớp 8', 'Lớp 9'] : ['Lớp 10', 'Lớp 11', 'Lớp 12'];
+      
+      list.forEach((g, idx) => {
+        const opt = document.createElement('option');
+        opt.value = g; opt.innerText = g;
+        if(idx === 0) opt.selected = true;
+        gradeSelect.appendChild(opt);
+      });
+    }
+
+    function backToForm() {
+      document.getElementById('view-preview').classList.add('hidden');
+      document.getElementById('preview-actions').classList.add('hidden');
+      document.getElementById('view-form').classList.remove('hidden');
+    }
+
+    function speakText(text) {
+      if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'en-US';
+        window.speechSynthesis.speak(utterance);
+      } else {
+        alert("Trình duyệt của bạn không hỗ trợ đọc phát âm!");
+      }
+    }
+
+    // TẠO ĐỀ THI VỚI GROQ AI API
+    async function generateExamWithAI() {
+      const grade = document.getElementById('grade-select').value;
+      const time = document.getElementById('time-select').value;
+      const purpose = document.getElementById('purpose-select').value;
+      const topic = document.getElementById('topic-select').value;
+      const numQ = document.getElementById('num-questions').value;
+      const customPrompt = document.getElementById('custom-prompt').value;
+
+      document.getElementById('view-form').classList.add('hidden');
+      document.getElementById('view-loading').classList.remove('hidden');
+
+      const systemPrompt = `Bạn là Chuyên gia ra đề thi Tiếng Anh của Bộ Giáo Dục Việt Nam.
+Hãy tạo 1 đề thi Tiếng Anh hoàn chỉnh gồm ${numQ} câu hỏi cho ${grade}, loại bài: ${purpose}, chủ đề: "${topic}", thời gian: ${time}.
+Yêu cầu ma trận: ${customPrompt || 'Bám sát chương trình GDPT mới'}.
+
+TRẢ VỀ DUY NHẤT KHỐI JSON (KHÔNG DÙNG MARKDOWN CODE BLOCK, KHÔNG CHỨA BẤT KỲ VĂN BẢN MỞ ĐẦU/KẾT THÚC NÀO):
+{
+  "title": "ĐỀ KIỂM TRA MÔN TIẾNG ANH - ${grade.toUpperCase()}",
+  "time": "${time}",
+  "questions": [
+    {
+      "id": 1,
+      "section": "PRONUNCIATION & GRAMMAR",
+      "question": "Choose the word whose underlined part is pronounced differently from that of the others.",
+      "options": ["A. played", "B. cooked", "C. listened", "D. cleaned"],
+      "answer": "B",
+      "explanation": "Đáp án B 'cooked' phát âm đuôi -ed là /t/, các từ còn lại phát âm là /d/.",
+      "points": 0.25
+    }
+  ]
+}`;
+
+      try {
+        let rawRes = '';
+        const key = groqKey || localStorage.getItem('groq_api_key');
+
+        if (key) {
+          // GỌI TRỰC TIẾP GROQ API
+          const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${key}`
+            },
+            body: JSON.stringify({
+              model: "llama-3.3-70b-versatile",
+              messages: [{ role: "user", content: systemPrompt }]
+            })
+          });
+          const data = await res.json();
+          if (data.error) throw new Error(data.error.message);
+          rawRes = data.choices[0].message.content;
+        } else {
+          // KÊNH DỰ PHÒNG MIỄN PHÍ POLLINATIONS
+          const res = await fetch('https://text.pollinations.ai/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ messages: [{ role: "user", content: systemPrompt }], model: "openai" })
+          });
+          rawRes = await res.text();
+        }
+
+        const match = rawRes.match(/\{[\s\S]*\}/);
+        if (match) {
+          generatedExamData = JSON.parse(match[0]);
+        } else {
+          generatedExamData = getDemoExamData(grade, time, numQ);
+        }
+
+        renderExamResult(generatedExamData);
+      } catch (err) {
+        alert("Thông báo: " + err.message + ". Đã tự động tạo đề thi mẫu dự phòng chuẩn GDPT!");
+        generatedExamData = getDemoExamData(grade, time, numQ);
+        renderExamResult(generatedExamData);
+      } finally {
+        document.getElementById('view-loading').classList.add('hidden');
+      }
+    }
+
+    function getDemoExamData(grade, time, numQ) {
+      return {
+        title: `ĐỀ KIỂM TRA TIẾNG ANH - ${grade.toUpperCase()}`,
+        time: time,
+        questions: [
+          { id: 1, section: "PHONETICS", question: "Choose the word whose underlined part is pronounced differently.", options: ["A. happy", "B. family", "C. cat", "D. father"], answer: "D", explanation: "'father' phát âm /ɑː/, các từ còn lại phát âm /æ/.", points: 0.5 },
+          { id: 2, section: "GRAMMAR", question: "She _______ to school every day by bicycle.", options: ["A. go", "B. goes", "C. went", "D. going"], answer: "B", explanation: "Thì hiện tại đơn chỉ thói quen với chủ ngữ số ít 'She' chia động từ 'goes'.", points: 0.5 },
+          { id: 3, section: "READING", question: "Viet Nam is a beautiful country _______ rich history and culture.", options: ["A. with", "B. of", "C. in", "D. about"], answer: "A", explanation: "Cụm từ 'with rich history' có nghĩa là 'với lịch sử phong phú'.", points: 0.5 },
+          { id: 4, section: "WRITING", question: "Find the underlined part that needs correction: He enjoy listening to music in his free time.", options: ["A. enjoy", "B. listening", "C. to", "D. free time"], answer: "A", explanation: "Chủ ngữ 'He' yêu cầu động từ thêm 's' -> 'enjoys'.", points: 0.5 }
+        ]
+      };
+    }
+
+    function renderExamResult(data) {
+      document.getElementById('out-exam-title').innerText = data.title;
+      document.getElementById('out-exam-sub').innerText = `Thời gian làm bài: ${data.time}`;
+
+      const qContainer = document.getElementById('out-questions-container');
+      const aContainer = document.getElementById('out-answers-container');
+      
+      qContainer.innerHTML = '';
+      aContainer.innerHTML = '';
+      studentAnswers = {};
+
+      data.questions.forEach((q, idx) => {
+        // Render Đề
+        const qEl = document.createElement('div');
+        qEl.className = 'space-y-3 border-b border-slate-100 pb-4';
+        qEl.id = `q-card-${idx}`;
+        qEl.innerHTML = `
+          <div class="flex items-start justify-between gap-2">
+            <p class="font-bold text-slate-800">
+              Câu ${idx + 1}. ${q.question} 
+              <span class="font-normal italic text-slate-400 text-xs">(${q.points || 0.25}đ)</span>
+            </p>
+            <button onclick="speakText('${q.question.replace(/'/g, "\\'")}')" class="text-xs text-emerald-600 hover:text-emerald-500 font-bold flex items-center gap-1 no-print">
+              🔊 Nghe
+            </button>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pl-2 text-slate-700" id="options-q-${idx}">
+            ${q.options.map((opt, oIdx) => `
+              <label class="opt-label p-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-emerald-50/50 hover:border-emerald-300 transition flex items-center gap-2 cursor-pointer">
+                <input type="radio" name="q_${idx}" value="${String.fromCharCode(65 + oIdx)}" onchange="selectStudentAnswer(${idx}, '${String.fromCharCode(65 + oIdx)}')" class="text-emerald-600 focus:ring-emerald-500">
+                <span class="font-medium text-xs sm:text-sm">${opt}</span>
+              </label>
+            `).join('')}
+          </div>
+        `;
+        qContainer.appendChild(qEl);
+
+        // Render Đáp án
+        const aEl = document.createElement('div');
+        aEl.className = 'border border-slate-100 bg-slate-50/80 p-3 rounded-2xl space-y-1 text-xs';
+        aEl.innerHTML = `
+          <div class="flex justify-between items-center">
+            <span class="bg-slate-200 text-slate-800 font-bold px-2 py-0.5 rounded-lg text-[11px]">Câu ${idx + 1}</span>
+            <span class="text-emerald-600 font-extrabold text-xs">Đáp án: ${q.answer}</span>
+          </div>
+          <p class="text-slate-600 text-[11px] pt-1 italic border-t border-slate-200/50 mt-1">${q.explanation || ''}</p>
+        `;
+        aContainer.appendChild(aEl);
+      });
+
+      document.getElementById('view-preview').classList.remove('hidden');
+      document.getElementById('preview-actions').classList.remove('hidden');
+      switchMode('teacher');
+    }
+
+    function selectStudentAnswer(qIdx, val) {
+      studentAnswers[qIdx] = val;
+    }
+
+    function switchMode(mode) {
+      currentMode = mode;
+      const btnTeacher = document.getElementById('btn-mode-teacher');
+      const btnStudent = document.getElementById('btn-mode-student');
+      const submitArea = document.getElementById('student-submit-area');
+      const answerSidebar = document.getElementById('answer-sidebar');
+      const scoreBox = document.getElementById('student-score-box');
+
+      if (mode === 'teacher') {
+        btnTeacher.className = "text-xs font-bold px-3 py-2 rounded-xl border border-emerald-600 bg-emerald-600 text-white shadow transition";
+        btnStudent.className = "text-xs font-bold px-3 py-2 rounded-xl border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 transition";
+        submitArea.classList.add('hidden');
+        answerSidebar.classList.remove('hidden'); // Giáo viên nhìn thấy đáp án ngay
+        scoreBox.classList.add('hidden');
+      } else {
+        btnStudent.className = "text-xs font-bold px-3 py-2 rounded-xl border border-emerald-600 bg-emerald-600 text-white shadow transition";
+        btnTeacher.className = "text-xs font-bold px-3 py-2 rounded-xl border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 transition";
+        submitArea.classList.remove('hidden');
+        answerSidebar.classList.add('hidden'); // Học sinh bị ẨN đáp án khi bắt đầu thi online!
+        scoreBox.classList.add('hidden');
+      }
+    }
+
+    function gradeStudentExam() {
+      if (!generatedExamData || !generatedExamData.questions) return;
+      let score = 0;
+      let total = generatedExamData.questions.length;
+
+      generatedExamData.questions.forEach((q, idx) => {
+        const userChoice = studentAnswers[idx];
+        const card = document.getElementById(`q-card-${idx}`);
+        
+        if (userChoice === q.answer) {
+          score += 1;
+          card.classList.add('bg-emerald-50/50', 'p-3', 'rounded-2xl');
+        } else {
+          card.classList.add('bg-rose-50/50', 'p-3', 'rounded-2xl');
+        }
+      });
+
+      const scoreBox = document.getElementById('student-score-box');
+      const scoreVal = document.getElementById('student-score-val');
+      const scoreMsg = document.getElementById('student-score-msg');
+      const answerSidebar = document.getElementById('answer-sidebar');
+
+      scoreVal.innerText = `${score} / ${total}`;
+      const ratio = score / total;
+      if(ratio >= 0.8) {
+        scoreMsg.innerText = "🌟 Xuất sắc! Bạn nắm rất vững kiến thức.";
+        confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+      } else if(ratio >= 0.5) {
+        scoreMsg.innerText = "👍 Khá tốt! Hãy đọc kỹ giải thích ngữ pháp để đạt điểm tối đa.";
+      } else {
+        scoreMsg.innerText = "💪 Cố gắng lên! Hãy ôn tập lại các dạng câu hỏi bị sai.";
+      }
+
+      // HIỆN CỘT ĐÁP ÁN SAU KHI NỘP BÀI
+      answerSidebar.classList.remove('hidden');
+      scoreBox.classList.remove('hidden');
+      scoreBox.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // PHƯƠNG PHÁP XUẤT WORD THỰC THỂ NATIVE BLOB (HOẠT ĐỘNG 100% TRÊN MỌI TRÌNH DUYỆT)
+    function exportToWord() {
+      const examElement = document.getElementById('exam-document');
+      if (!examElement) return;
+
+      // Nhân bản phần đề thi để xử lý
+      const clone = examElement.cloneNode(true);
+
+      // Loại bỏ các phần không cần thiết khi in/xuất Word (nút bấm, audio...)
+      clone.querySelectorAll('.no-print, button, input[type="radio"]').forEach(el => el.remove());
+
+      const header = `<html xmlns:o='urn:schemas-microsoft-com:office:office' 
+                            xmlns:w='urn:schemas-microsoft-com:office:word' 
+                            xmlns='http://www.w3.org/TR/REC-html40'>
+      <head>
+        <meta charset='utf-8'>
+        <title>Đề Thi Tiếng Anh</title>
+        <style>
+          body { font-family: 'Times New Roman', serif; font-size: 12pt; line-height: 1.4; color: #000; }
+          p { margin: 4pt 0; }
+          .font-bold { font-weight: bold; }
+          .border-b { border-bottom: 1px solid #ccc; padding-bottom: 8px; margin-bottom: 12px; }
+          .grid { display: block; }
+          .grid > div { margin-bottom: 4px; }
+        </style>
+      </head>
+      <body>`;
+
+      const footer = `</body></html>`;
+      const htmlContent = header + clone.innerHTML + footer;
+
+      const blob = new Blob(['\ufeff' + htmlContent], {
+        type: 'application/msword;charset=utf-8'
+      });
+
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `De_Thi_Tieng_Anh_${new Date().toISOString().slice(0, 10)}.doc`;
+      document.body.appendChild(link);
+      link.click();
+      
+      setTimeout(() => {
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      }, 100);
+    }
+  </script>
+</body>
+</html>
