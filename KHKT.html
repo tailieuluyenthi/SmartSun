@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KHKT WRITER PRO 2026 - Smart Multi-AI Studio</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- html-docx.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html-docx-js/0.3.1/html-docx.min.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; height: 5px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 antialiased h-screen flex flex-col overflow-hidden relative">
+
+    <!-- SECURITY LOGIN OVERLAY (KHÓA BẢO MẬT) -->
+    <div id="authOverlay" class="fixed inset-0 bg-slate-900/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 space-y-5 border border-slate-200">
+            <div class="text-center space-y-2">
+                <div class="inline-flex p-3 bg-emerald-100 text-emerald-600 rounded-2xl mb-1">
+                    <i data-lucide="shield-lock" class="w-8 h-8"></i>
+                </div>
+                <h2 class="text-xl font-extrabold text-slate-900">Xác Thực Bản Quyền</h2>
+                <p class="text-xs text-slate-500">Vui lòng nhập Mã thiết bị và Key đăng nhập để mở khóa ứng dụng</p>
+            </div>
+
+            <div class="space-y-4 text-xs">
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Mã thiết bị (Cột A)</label>
+                    <div class="relative">
+                        <input type="text" id="authDeviceId" placeholder="Nhập mã thiết bị..." class="w-full pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white font-medium">
+                        <i data-lucide="cpu" class="w-4 h-4 text-slate-400 absolute left-3 top-3"></i>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Key đăng nhập (Cột B)</label>
+                    <div class="relative">
+                        <input type="password" id="authKey" placeholder="Nhập key đăng nhập..." class="w-full pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white font-medium">
+                        <i data-lucide="key" class="w-4 h-4 text-slate-400 absolute left-3 top-3"></i>
+                    </div>
+                </div>
+
+                <div id="authError" class="hidden p-3 bg-rose-50 border border-rose-200 text-rose-600 rounded-xl font-medium text-center">
+                    Mã thiết bị hoặc Key đăng nhập không chính xác!
+                </div>
+
+                <button onclick="authenticateUser()" id="btnAuth" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-md transition active:scale-95 flex items-center justify-center space-x-2 text-xs">
+                    <i data-lucide="log-in" class="w-4 h-4"></i>
+                    <span>Xác Nhận Đăng Nhập</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOP NAVBAR -->
+    <header class="h-16 bg-white border-b border-slate-200/80 px-6 flex items-center justify-between z-20 shrink-0 shadow-sm">
+        <div class="flex items-center space-x-3">
+            <div class="p-2.5 bg-gradient-to-tr from-emerald-600 to-teal-500 text-white rounded-xl shadow-md">
+                <i data-lucide="atom" class="w-6 h-6"></i>
+            </div>
+            <div>
+                <div class="flex items-center space-x-2">
+                    <h1 class="font-extrabold text-slate-900 tracking-tight text-base">KHKT WRITER PRO</h1>
+                    <span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 font-bold text-[10px] rounded-full uppercase">v2026.6</span>
+                </div>
+                <p class="text-[11px] text-slate-500">Hệ thống khởi tạo báo cáo KHKT AI chống nghẽn Quota</p>
+            </div>
+        </div>
+
+        <!-- AI PROVIDER & MODEL SELECTOR -->
+        <div class="flex items-center space-x-3">
+            <div class="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs">
+                <span class="font-semibold px-2 text-slate-500 flex items-center gap-1">
+                    <i data-lucide="cpu" class="w-3.5 h-3.5 text-emerald-600"></i> Nền tảng:
+                </span>
+                <select id="providerSelect" onchange="updateModelOptions()" class="bg-white font-medium text-slate-800 px-2.5 py-1.5 rounded-lg border border-slate-200 outline-none cursor-pointer focus:ring-2 focus:ring-emerald-500 transition">
+                    <option value="groq">1. Groq Cloud (Miễn phí - Ổn định nhất)</option>
+                    <option value="gemini">2. Google Gemini (Nhanh & Tốt nhất)</option>
+                    <option value="openrouter">3. OpenRouter (Bao gồm các model Free)</option>
+                    <option value="openai">4. OpenAI (ChatGPT)</option>
+                    <option value="pollinations">5. Pollinations AI (Miễn phí - Không cần Key)</option>
+                </select>
+
+                <span class="font-semibold pl-3 pr-2 text-slate-500 border-l border-slate-300 ml-1">Mô hình:</span>
+                <select id="modelSelect" class="bg-white font-medium text-slate-800 px-2.5 py-1.5 rounded-lg border border-slate-200 outline-none cursor-pointer focus:ring-2 focus:ring-emerald-500 transition max-w-[220px]">
+                </select>
+            </div>
+
+            <!-- KEY MANAGER BUTTON -->
+            <button onclick="openKeyModal()" class="flex items-center space-x-2 px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-semibold transition active:scale-95">
+                <i data-lucide="key" class="w-3.5 h-3.5 text-emerald-400"></i>
+                <span>Cài đặt API Keys</span>
+                <span id="activeKeysBadge" class="px-1.5 py-0.5 bg-emerald-500/20 text-emerald-300 text-[10px] rounded-md font-bold">0 Active</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN APP CONTAINER -->
+    <div class="flex flex-1 overflow-hidden">
+        
+        <!-- SIDEBAR NAVIGATION -->
+        <aside class="w-80 bg-white border-r border-slate-200 flex flex-col shrink-0">
+            <div class="p-3.5 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+                <span class="font-bold text-[11px] text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                    <i data-lucide="list-tree" class="w-3.5 h-3.5"></i> Cấu trúc đề tài
+                </span>
+                <button onclick="exportAllToWord()" class="text-xs text-emerald-600 hover:text-emerald-700 font-bold hover:underline flex items-center space-x-1">
+                    <i data-lucide="file-down" class="w-3.5 h-3.5"></i>
+                    <span>Tải Word (.docx)</span>
+                </button>
+            </div>
+            
+            <nav class="flex-1 overflow-y-auto p-3 space-y-1 custom-scrollbar text-xs" id="sidebarMenu">
+                <button onclick="switchTab('info')" id="tab-info" class="nav-btn w-full flex items-center space-x-2.5 px-3 py-2.5 rounded-xl text-emerald-700 bg-emerald-50 font-bold transition border border-emerald-200/60">
+                    <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+                    <span>Thông tin dự án</span>
+                </button>
+                
+                <div class="pt-3">
+                    <button onclick="toggleAccordion('acc-p1')" class="w-full flex items-center justify-between px-2 py-1.5 font-bold text-slate-700 hover:text-emerald-600 transition">
+                        <span class="flex items-center space-x-2">
+                            <i data-lucide="book-open" class="w-4 h-4 text-slate-400"></i>
+                            <span>PHẦN I. MỞ ĐẦU</span>
+                        </span>
+                        <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-400"></i>
+                    </button>
+                    <div id="acc-p1" class="pl-3 space-y-0.5 mt-1 border-l-2 border-slate-200 ml-3">
+                        <button onclick="switchTab('p1_1')" id="tab-p1_1" class="nav-btn w-full text-left px-3 py-1.5 rounded-lg text-slate-600 hover:bg-slate-100">1. Lý do chọn đề tài</button>
+                        <button onclick="switchTab('p1_2')" id="tab-p1_2" class="nav-btn w-full text-left px-3 py-1.5 rounded-lg text-slate-600 hover:bg-slate-100">2. Mục tiêu nghiên cứu</button>
+                        <button onclick="switchTab('p1_3')" id="tab-p1_3" class="nav-btn w-full text-left px-3 py-1.5 rounded-lg text-slate-600 hover:bg-slate-100">3. Đối tượng nghiên cứu</button>
+                        <button onclick="switchTab('p1_4')" id="tab-p1_4" class="nav-btn w-full text-left px-3 py-1.5 rounded-lg text-slate-600 hover:bg-slate-100">4. Phạm vi nghiên cứu</button>
+                        <button onclick="switchTab('p1_5')" id="tab-p1_5" class="nav-btn w-full text-left px-3 py-1.5 rounded-lg text-slate-600 hover:bg-slate-100">5. Câu hỏi nghiên cứu</button>
+                        <button onclick="switchTab('p1_6')" id="tab-p1_6" class="nav-btn w-full text-left px-3 py-1.5 rounded-lg text-slate-600 hover:bg-slate-100">6. Giả thuyết khoa học</button>
+                        <button onclick="switchTab('p1_7')" id="tab-p1_7" class="nav-btn w-full text-left px-3 py-1.5 rounded-lg text-slate-600 hover:bg-slate-100">7. Ý nghĩa KH & thực tiễn</button>
+                        <button onclick="switchTab('p1_8')" id="tab-p1_8" class="nav-btn w-full text-left px-3 py-1.5 rounded-lg text-slate-600 hover:bg-slate-100">8. Phương pháp nghiên cứu</button>
+                        <button onclick="switchTab('p1_9')" id="tab-p1_9" class="nav-btn w-full text-left px-3 py-1.5 rounded-lg text-slate-600 hover:bg-slate-100">9. Tính mới (sáng tạo)</button>
+                    </div>
+                </div>
+
+                <div class="pt-3">
+                    <button onclick="toggleAccordion('acc-p23')" class="w-full flex items-center justify-between px-2 py-1.5 font-bold text-slate-700 hover:text-emerald-600 transition">
+                        <span class="flex items-center space-x-2">
+                            <i data-lucide="layers" class="w-4 h-4 text-slate-400"></i>
+                            <span>PHẦN II & III. NỘI DUNG</span>
+                        </span>
+                        <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-400"></i>
+                    </button>
+                    <div id="acc-p23" class="pl-2 space-y-1 mt-1">
+                        <div>
+                            <div class="px-2 py-1 font-semibold text-slate-400 text-[10px] uppercase">Chương 1. Cơ sở lý luận</div>
+                            <div class="pl-3 space-y-0.5 border-l-2 border-slate-200 ml-2">
+                                <button onclick="switchTab('c1_khainiem')" id="tab-c1_khainiem" class="nav-btn w-full text-left px-2.5 py-1 rounded-lg text-slate-600 hover:bg-slate-100">Khái niệm cơ bản</button>
+                                <button onclick="switchTab('c1_kienthuc')" id="tab-c1_kienthuc" class="nav-btn w-full text-left px-2.5 py-1 rounded-lg text-slate-600 hover:bg-slate-100">Kiến thức nền tảng</button>
+                                <button onclick="switchTab('c1_nclienquan')" id="tab-c1_nclienquan" class="nav-btn w-full text-left px-2.5 py-1 rounded-lg text-slate-600 hover:bg-slate-100">Các NC liên quan</button>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="px-2 py-1 font-semibold text-slate-400 text-[10px] uppercase">Chương 2. Thực trạng</div>
+                            <div class="pl-3 space-y-0.5 border-l-2 border-slate-200 ml-2">
+                                <button onclick="switchTab('c2_khaosat')" id="tab-c2_khaosat" class="nav-btn w-full text-left px-2.5 py-1 rounded-lg text-slate-600 hover:bg-slate-100">Khảo sát thực tế</button>
+                                <button onclick="switchTab('c2_thuthap')" id="tab-c2_thuthap" class="nav-btn w-full text-left px-2.5 py-1 rounded-lg text-slate-600 hover:bg-slate-100">Thu thập dữ liệu</button>
+                                <button onclick="switchTab('c2_phantich')" id="tab-c2_phantich" class="nav-btn w-full text-left px-2.5 py-1 rounded-lg text-slate-600 hover:bg-slate-100">Phân tích số liệu</button>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="px-2 py-1 font-semibold text-slate-400 text-[10px] uppercase">Chương 3. Giải pháp & Sản phẩm</div>
+                            <div class="pl-3 space-y-0.5 border-l-2 border-slate-200 ml-2">
+                                <button onclick="switchTab('c3_ytuong')" id="tab-c3_ytuong" class="nav-btn w-full text-left px-2.5 py-1 rounded-lg text-slate-600 hover:bg-slate-100">Ý tưởng thiết kế</button>
+                                <button onclick="switchTab('c3_thietke')" id="tab-c3_thietke" class="nav-btn w-full text-left px-2.5 py-1 rounded-lg text-slate-600 hover:bg-slate-100">Thiết kế kỹ thuật</button>
+                                <button onclick="switchTab('c3_quytrinh')" id="tab-c3_quytrinh" class="nav-btn w-full text-left px-2.5 py-1 rounded-lg text-slate-600 hover:bg-slate-100">Quy trình chế tạo</button>
+                                <button onclick="switchTab('c3_mohinh')" id="tab-c3_mohinh" class="nav-btn w-full text-left px-2.5 py-1 rounded-lg text-slate-600 hover:bg-slate-100">Mô hình hoàn thiện</button>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="px-2 py-1 font-semibold text-slate-400 text-[10px] uppercase">Chương 4 & Kết luận</div>
+                            <div class="pl-3 space-y-0.5 border-l-2 border-slate-200 ml-2">
+                                <button onclick="switchTab('c4_thucnghiem')" id="tab-c4_thucnghiem" class="nav-btn w-full text-left px-2.5 py-1 rounded-lg text-slate-600 hover:bg-slate-100">Thực nghiệm & Thử nghiệm</button>
+                                <button onclick="switchTab('c4_danhgia')" id="tab-c4_danhgia" class="nav-btn w-full text-left px-2.5 py-1 rounded-lg text-slate-600 hover:bg-slate-100">Đánh giá & Kết luận</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- MAIN EDITOR WORKSPACE -->
+        <main class="flex-1 overflow-y-auto bg-slate-50/50 p-6 custom-scrollbar" id="mainContent">
+            
+            <div id="content-info" class="tab-content max-w-4xl mx-auto space-y-6">
+                <div class="relative overflow-hidden bg-gradient-to-br from-slate-900 via-emerald-950 to-slate-900 rounded-2xl p-7 text-white shadow-xl border border-emerald-500/20">
+                    <div class="relative z-10">
+                        <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-semibold mb-3 border border-emerald-500/30">
+                            <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
+                            <span>Hệ thống AI Tự động Chuyển Đổi Kênh khi Nghẽn Quota</span>
+                        </div>
+                        <h2 class="text-2xl font-black tracking-tight">Thiết Lập Đề Tài Khoa Học Kỹ Thuật</h2>
+                        <p class="text-slate-300 text-xs mt-1.5 max-w-2xl leading-relaxed">Cung cấp thông tin bối cảnh bên dưới. Nhớ chọn đúng Model và nhập API Key tương ứng trong phần "Cài đặt API Keys" trước khi gọi AI.</p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl border border-slate-200 p-6 space-y-6 shadow-sm">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                        <h3 class="font-bold text-slate-800 text-sm uppercase tracking-wide flex items-center gap-2">
+                            <i data-lucide="info" class="w-4 h-4 text-emerald-600"></i>
+                            <span>1. Thông tin tổng quan đề tài</span>
+                        </h3>
+                        <button onclick="openSuggestTitleModal()" class="px-3.5 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded-xl text-xs font-bold flex items-center space-x-1.5 border border-emerald-200 transition">
+                            <i data-lucide="lightbulb" class="w-3.5 h-3.5"></i>
+                            <span>AI Gợi ý tên đề tài</span>
+                        </button>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1.5">Tên đề tài KHKT *</label>
+                            <input type="text" id="projectTitle" placeholder='VD: "Nghiên cứu khả năng xử lý nước thải bằng than hoạt tính từ vỏ trấu"' class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1.5">Lĩnh vực KHKT *</label>
+                                <select id="projectCategory" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                                    <option value="Hệ thống nhúng & Kỹ thuật">Hệ thống nhúng & Kỹ thuật</option>
+                                    <option value="Khoa học môi trường">Khoa học môi trường</option>
+                                    <option value="Kỹ thuật cơ khí">Kỹ thuật cơ khí</option>
+                                    <option value="Khoa học thực vật & Sinh học">Khoa học thực vật & Sinh học</option>
+                                    <option value="Khoa học xã hội & Hành vi">Khoa học xã hội & Hành vi</option>
+                                    <option value="Phần mềm hệ thống & AI">Phần mềm hệ thống & AI</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1.5">Cấp độ thi *</label>
+                                <select id="projectLevel" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                                    <option value="Cấp Trường/Huyện">Cấp Trường / Huyện</option>
+                                    <option value="Cấp Tỉnh/Thành phố">Cấp Tỉnh / Thành phố</option>
+                                    <option value="Cấp Quốc gia">Cấp Quốc gia</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3 class="font-bold text-slate-800 text-sm uppercase tracking-wide border-b border-slate-100 pb-3 pt-2 flex items-center gap-2">
+                        <i data-lucide="file-text" class="w-4 h-4 text-emerald-600"></i>
+                        <span>2. Vấn đề thực tế & Định hướng giải pháp</span>
+                    </h3>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1.5">Thực trạng / Lý do chọn đề tài *</label>
+                            <textarea id="projectProblem" rows="3" placeholder="Mô tả hoàn cảnh địa phương, khó khăn cần giải quyết..." class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1.5">Giải pháp sáng tạo đề xuất *</label>
+                            <textarea id="projectSolution" rows="3" placeholder="Mô tả ý tưởng giải pháp, công nghệ hoặc mô hình đề xuất..." class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="pt-2 flex justify-end">
+                        <button onclick="switchTab('p1_1')" class="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold flex items-center space-x-2 shadow-md transition active:scale-95">
+                            <span>Bắt đầu soạn thảo Phần I</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- EDITOR WORKSPACE FOR SECTIONS -->
+            <div id="editor-container" class="hidden max-w-5xl mx-auto space-y-4">
+                <div class="bg-white rounded-2xl border border-slate-200 p-4 flex items-center justify-between shadow-sm">
+                    <div>
+                        <h2 id="currentSectionTitle" class="text-base font-extrabold text-slate-900">Tên phần</h2>
+                        <p class="text-[11px] text-slate-500">Soạn thảo văn bản khoa học kỹ thuật với AI trợ lý</p>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button onclick="generateSectionContent()" id="btnGenerate" class="px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white rounded-xl text-xs font-bold flex items-center space-x-2 shadow-md transition active:scale-95">
+                            <i data-lucide="wand2" class="w-4 h-4"></i>
+                            <span>AI Viết Phần Này</span>
+                        </button>
+                        <button onclick="copyContent()" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition">
+                            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                            <span>Sao chép</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col h-[calc(100vh-215px)] relative">
+                    <div id="editorLoading" class="absolute inset-0 bg-white/80 backdrop-blur-sm z-10 hidden flex flex-col items-center justify-center space-y-3">
+                        <div class="w-10 h-10 border-4 border-emerald-200 border-t-emerald-600 rounded-full animate-spin"></div>
+                        <p id="loadingStatusText" class="text-xs font-bold text-slate-700">AI đang suy luận & soạn thảo nội dung...</p>
+                    </div>
+
+                    <textarea id="sectionTextarea" class="w-full flex-1 p-6 text-slate-800 text-sm leading-relaxed outline-none resize-none custom-scrollbar font-sans" placeholder="Bấm 'AI Viết Phần Này' để tự động tạo nội dung..."></textarea>
+                    
+                    <div class="bg-slate-50 border-t border-slate-200 px-5 py-2.5 text-xs text-slate-500 flex justify-between items-center font-medium">
+                        <div class="flex items-center space-x-4">
+                            <span id="charCount">0 ký tự</span>
+                            <span id="wordCount">0 từ</span>
+                        </div>
+                        <span class="text-[11px] text-emerald-600 font-semibold flex items-center gap-1">
+                            <i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i> Định dạng báo cáo chuẩn
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- MODAL API KEYS -->
+    <div id="keyModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center z-50">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6 space-y-5 border border-slate-100 max-h-[90vh] flex flex-col">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <div class="flex items-center space-x-3 text-slate-900">
+                    <div class="p-2 bg-emerald-100 text-emerald-600 rounded-xl">
+                        <i data-lucide="key-round" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-extrabold text-base">Cấu hình API Keys</h3>
+                        <p class="text-[11px] text-slate-500">Nhập Key cho dịch vụ bạn muốn dùng</p>
+                    </div>
+                </div>
+                <button onclick="closeKeyModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x"></i></button>
+            </div>
+
+            <div class="overflow-y-auto space-y-4 pr-1 custom-scrollbar text-xs">
+                <!-- Groq -->
+                <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                    <div class="flex justify-between items-center mb-1.5">
+                        <label class="font-bold text-slate-800">1. Groq Cloud (Khuyên dùng - Miễn phí 100%)</label>
+                        <a href="https://console.groq.com/" target="_blank" class="text-[10px] text-emerald-600 hover:underline">Lấy key miễn phí &rarr;</a>
+                    </div>
+                    <input type="password" id="key_groq" placeholder="gsk_..." class="w-full px-3 py-2 border rounded-lg text-xs outline-none focus:ring-2 focus:ring-emerald-500 bg-white">
+                </div>
+
+                <!-- Gemini -->
+                <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                    <div class="flex justify-between items-center mb-1.5">
+                        <label class="font-bold text-slate-800">2. Google Gemini API Key</label>
+                        <a href="https://aistudio.google.com/" target="_blank" class="text-[10px] text-emerald-600 hover:underline">Lấy key miễn phí &rarr;</a>
+                    </div>
+                    <input type="password" id="key_gemini" placeholder="AIzaSy..." class="w-full px-3 py-2 border rounded-lg text-xs outline-none focus:ring-2 focus:ring-emerald-500 bg-white">
+                </div>
+
+                <!-- OpenRouter -->
+                <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                    <div class="flex justify-between items-center mb-1.5">
+                        <label class="font-bold text-slate-800">3. OpenRouter API Key</label>
+                        <a href="https://openrouter.ai/" target="_blank" class="text-[10px] text-emerald-600 hover:underline">Lấy key miễn phí &rarr;</a>
+                    </div>
+                    <input type="password" id="key_openrouter" placeholder="sk-or-v1-..." class="w-full px-3 py-2 border rounded-lg text-xs outline-none focus:ring-2 focus:ring-emerald-500 bg-white">
+                </div>
+
+                <!-- OpenAI -->
+                <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                    <div class="flex justify-between items-center mb-1.5">
+                        <label class="font-bold text-slate-800">4. OpenAI API Key (Cần nạp tiền)</label>
+                        <a href="https://platform.openai.com/" target="_blank" class="text-[10px] text-emerald-600 hover:underline">Lấy key OpenAI &rarr;</a>
+                    </div>
+                    <input type="password" id="key_openai" placeholder="sk-proj-..." class="w-full px-3 py-2 border rounded-lg text-xs outline-none focus:ring-2 focus:ring-emerald-500 bg-white">
+                </div>
+            </div>
+
+            <button onclick="saveKeys()" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs shadow-md transition active:scale-95">
+                Lưu Danh Sách API Key
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL GỢI Ý TÊN -->
+    <div id="suggestModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center z-50">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6 space-y-4 border border-slate-100">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <h3 class="font-extrabold text-sm text-emerald-700 flex items-center space-x-2">
+                    <i data-lucide="sparkles" class="w-4 h-4"></i>
+                    <span>Trợ Lý AI Gợi Ý Tên Đề Tài</span>
+                </h3>
+                <button onclick="closeSuggestTitleModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x"></i></button>
+            </div>
+            <div class="space-y-3 text-xs">
+                <div>
+                    <label class="font-bold text-slate-700 mb-1 block">1. Đặc điểm địa phương / trường học?</label>
+                    <input type="text" id="sugField1" placeholder="VD: Nông thôn, vùng ven biển..." class="w-full p-2.5 bg-slate-50 border rounded-xl outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+                <div>
+                    <label class="font-bold text-slate-700 mb-1 block">2. Vấn đề thực tế cần giải quyết?</label>
+                    <input type="text" id="sugField2" placeholder="VD: Rác thải nhựa, ô nhiễm nguồn nước..." class="w-full p-2.5 bg-slate-50 border rounded-xl outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+                <button onclick="generateTitleIdeas()" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs flex items-center justify-center space-x-2 shadow-md transition">
+                    <i data-lucide="wand2" class="w-3.5 h-3.5"></i>
+                    <span>Tạo 5 Gợi Ý Tên Đề Tài</span>
+                </button>
+                <div id="titleResults" class="mt-3 space-y-2 hidden">
+                    <label class="font-bold text-slate-700 block">Click chọn tên đề tài:</label>
+                    <div id="titleList" class="space-y-1.5"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- LOGIC JS MULTI-AI VA APIS -->
+    <script>
+        lucide.createIcons();
+
+        // -----------------------------------------------------------------
+        // LOGIC KHÓA BẢO MẬT BẰNG GOOGLE SHEETS CSV
+        // -----------------------------------------------------------------
+        const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ5caItjqvz4wVa5eZGFx_Tsm-8KM8ImX7ALjhGMesCS7jQF47W5WASJruFNfOKUxS1vO_OU_5twdpt/pub?output=csv';
+
+        // Đơn giản hóa việc parse CSV
+        function parseCSV(text) {
+            const lines = text.split(/\r\n|\n/);
+            return lines.map(line => {
+                // Xử lý dấu phẩy trong CSV
+                const values = [];
+                let current = '';
+                let inQuotes = false;
+                for (let i = 0; i < line.length; i++) {
+                    const char = line[i];
+                    if (char === '"') {
+                        inQuotes = !inQuotes;
+                    } else if (char === ',' && !inQuotes) {
+                        values.push(current.trim());
+                        current = '';
+                    } else {
+                        current += char;
+                    }
+                }
+                values.push(current.trim());
+                return values;
+            });
+        }
+
+        async function authenticateUser() {
+            const deviceIdInput = document.getElementById('authDeviceId').value.trim();
+            const keyInput = document.getElementById('authKey').value.trim();
+            const errDiv = document.getElementById('authError');
+            const btnAuth = document.getElementById('btnAuth');
+
+            if (!deviceIdInput || !keyInput) {
+                errDiv.innerText = "Vui lòng nhập đầy đủ Mã thiết bị và Key đăng nhập!";
+                errDiv.classList.remove('hidden');
+                return;
+            }
+
+            btnAuth.disabled = true;
+            btnAuth.innerHTML = `<span class="animate-spin mr-2">🌀</span> Đang kiểm tra...`;
+            errDiv.classList.add('hidden');
+
+            try {
+                const response = await fetch(CSV_URL);
+                if (!response.ok) throw new Error("Không thể kết nối với máy chủ xác thực CSV.");
+                
+                const csvData = await response.text();
+                const rows = parseCSV(csvData);
+
+                // Dò Cột A (index 0) và Cột B (index 1)
+                let isValid = false;
+                for (let i = 0; i < rows.length; i++) {
+                    const row = rows[i];
+                    if (row.length >= 2) {
+                        const colA = row[0].replace(/^["']|["']$/g, '').trim();
+                        const colB = row[1].replace(/^["']|["']$/g, '').trim();
+
+                        if (colA === deviceIdInput && colB === keyInput) {
+                            isValid = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (isValid) {
+                    // Đăng nhập thành công -> ẩn overlay xác thực
+                    document.getElementById('authOverlay').classList.add('hidden');
+                    // Lưu phiên làm việc tạm thời
+                    sessionStorage.setItem('khkt_authenticated', 'true');
+                } else {
+                    errDiv.innerText = "Mã thiết bị hoặc Key đăng nhập không chính xác!";
+                    errDiv.classList.remove('hidden');
+                }
+            } catch (err) {
+                errDiv.innerText = "Lỗi kết nối máy chủ bảo mật: " + err.message;
+                errDiv.classList.remove('hidden');
+            } finally {
+                btnAuth.disabled = false;
+                btnAuth.innerHTML = `<i data-lucide="log-in" class="w-4 h-4"></i><span>Xác Nhận Đăng Nhập</span>`;
+                lucide.createIcons();
+            }
+        }
+
+        // Tự động kiểm tra nếu đã xác thực trong phiên làm việc hiện tại
+        window.addEventListener('DOMContentLoaded', () => {
+            if (sessionStorage.getItem('khkt_authenticated') === 'true') {
+                document.getElementById('authOverlay').classList.add('hidden');
+            }
+        });
+
+        // -----------------------------------------------------------------
+        // CÁC CHỨC NĂNG ỨNG DỤNG GIỮ NGUYÊN
+        // -----------------------------------------------------------------
+        let currentTab = 'info';
+        const sectionContents = {};
+
+        const providerModels = {
+            groq: [
+                { id: 'llama-3.3-70b-versatile', name: 'Llama 3.3 70B (Miễn phí - Ổn định)' },
+                { id: 'llama-3.1-8b-instant', name: 'Llama 3.1 8B (Siêu nhanh)' },
+                { id: 'deepseek-r1-distill-llama-70b', name: 'DeepSeek R1 Distill 70B' },
+                { id: 'gemma2-9b-it', name: 'Gemma 2 9B' }
+            ],
+            gemini: [
+                { id: 'gemini-2.0-flash', name: 'Gemini 2.0 Flash (Nhanh & Chuẩn)' },
+                { id: 'gemini-1.5-flash', name: 'Gemini 1.5 Flash' },
+                { id: 'gemini-1.5-pro', name: 'Gemini 1.5 Pro' }
+            ],
+            openrouter: [
+                { id: 'meta-llama/llama-3.3-70b-instruct:free', name: 'Llama 3.3 70B (Miễn phí)' },
+                { id: 'deepseek/deepseek-r1:free', name: 'DeepSeek R1 (Miễn phí)' },
+                { id: 'google/gemini-2.0-flash-lite-preview-02-05:free', name: 'Gemini 2.0 Flash Lite (Miễn phí)' },
+                { id: 'qwen/qwen-2.5-coder-32b-instruct:free', name: 'Qwen 2.5 Coder (Miễn phí)' },
+                { id: 'mistralai/mistral-7b-instruct:free', name: 'Mistral 7B (Miễn phí)' },
+                { id: 'deepseek/deepseek-chat', name: 'DeepSeek V3 (Cần credit OpenRouter)' },
+                { id: 'openai/gpt-4o-mini', name: 'GPT-4o Mini (Cần credit OpenRouter)' }
+            ],
+            openai: [
+                { id: 'gpt-4o-mini', name: 'GPT-4o Mini (Khuyên dùng)' },
+                { id: 'gpt-4o', name: 'GPT-4o (Thông minh nhất)' },
+                { id: 'gpt-3.5-turbo', name: 'GPT-3.5 Turbo' }
+            ],
+            pollinations: [
+                { id: 'openai', name: 'Pollinations - OpenAI GPT (Miễn phí)' },
+                { id: 'mistral', name: 'Pollinations - Mistral (Miễn phí)' },
+                { id: 'qwen-coder', name: 'Pollinations - Qwen Coder (Miễn phí)' }
+            ]
+        };
+
+        const sectionTitles = {
+            'info': 'Thông tin dự án',
+            'p1_1': 'PHẦN I. 1. Lý do chọn đề tài',
+            'p1_2': 'PHẦN I. 2. Mục tiêu nghiên cứu',
+            'p1_3': 'PHẦN I. 3. Đối tượng nghiên cứu',
+            'p1_4': 'PHẦN I. 4. Phạm vi nghiên cứu',
+            'p1_5': 'PHẦN I. 5. Câu hỏi nghiên cứu',
+            'p1_6': 'PHẦN I. 6. Giả thuyết khoa học',
+            'p1_7': 'PHẦN I. 7. Ý nghĩa KH & thực tiễn',
+            'p1_8': 'PHẦN I. 8. Phương pháp nghiên cứu',
+            'p1_9': 'PHẦN I. 9. Tính mới (sáng tạo)',
+            'c1_khainiem': 'PHẦN II. Chương 1. Khái niệm cơ bản',
+            'c1_kienthuc': 'PHẦN II. Chương 1. Kiến thức nền tảng',
+            'c1_nclienquan': 'PHẦN II. Chương 1. Các nghiên cứu liên quan',
+            'c2_khaosat': 'PHẦN II. Chương 2. Khảo sát thực trạng',
+            'c2_thuthap': 'PHẦN II. Chương 2. Thu thập dữ liệu',
+            'c2_phantich': 'PHẦN II. Chương 2. Phân tích số liệu',
+            'c3_ytuong': 'PHẦN II. Chương 3. Ý tưởng giải pháp',
+            'c3_thietke': 'PHẦN II. Chương 3. Thiết kế giải pháp',
+            'c3_quytrinh': 'PHẦN II. Chương 3. Quy trình thực hiện',
+            'c3_mohinh': 'PHẦN II. Chương 3. Mô hình / Sản phẩm',
+            'c4_thucnghiem': 'PHẦN III. Chương 4. Thực nghiệm & Kết quả',
+            'c4_danhgia': 'PHẦN III. Đánh giá & Kết luận đề tài'
+        };
+
+        window.addEventListener('DOMContentLoaded', () => {
+            updateModelOptions();
+            loadKeys();
+            document.getElementById('sectionTextarea').addEventListener('input', () => {
+                sectionContents[currentTab] = document.getElementById('sectionTextarea').value;
+                updateWordAndCharCount();
+            });
+        });
+
+        function updateModelOptions() {
+            const provider = document.getElementById('providerSelect').value;
+            const modelSelect = document.getElementById('modelSelect');
+            modelSelect.innerHTML = '';
+            
+            if (providerModels[provider]) {
+                providerModels[provider].forEach(m => {
+                    const opt = document.createElement('option');
+                    opt.value = m.id;
+                    opt.innerText = m.name;
+                    modelSelect.appendChild(opt);
+                });
+            }
+        }
+
+        function openKeyModal() { document.getElementById('keyModal').classList.remove('hidden'); }
+        function closeKeyModal() { document.getElementById('keyModal').classList.add('hidden'); }
+
+        function loadKeys() {
+            const providers = ['groq', 'gemini', 'openrouter', 'openai'];
+            let activeCount = 0;
+            providers.forEach(p => {
+                const k = localStorage.getItem(`key_${p}`) || '';
+                document.getElementById(`key_${p}`).value = k;
+                if (k.trim()) activeCount++;
+            });
+            document.getElementById('activeKeysBadge').innerText = `${activeCount} Active`;
+        }
+
+        function saveKeys() {
+            const providers = ['groq', 'gemini', 'openrouter', 'openai'];
+            providers.forEach(p => {
+                const val = document.getElementById(`key_${p}`).value.trim();
+                localStorage.setItem(`key_${p}`, val);
+            });
+            loadKeys();
+            closeKeyModal();
+            alert("Đã lưu danh sách API Key!");
+        }
+
+        function toggleAccordion(id) {
+            document.getElementById(id).classList.toggle('hidden');
+        }
+
+        function switchTab(tabId) {
+            currentTab = tabId;
+
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-emerald-700', 'bg-emerald-50', 'font-bold', 'border', 'border-emerald-200/60');
+                btn.classList.add('text-slate-600');
+            });
+
+            const activeBtn = document.getElementById(`tab-${tabId}`);
+            if (activeBtn) {
+                activeBtn.classList.add('text-emerald-700', 'bg-emerald-50', 'font-bold');
+                activeBtn.classList.remove('text-slate-600');
+            }
+
+            const infoTab = document.getElementById('content-info');
+            const editorContainer = document.getElementById('editor-container');
+
+            if (tabId === 'info') {
+                infoTab.classList.remove('hidden');
+                editorContainer.classList.add('hidden');
+            } else {
+                infoTab.classList.add('hidden');
+                editorContainer.classList.remove('hidden');
+                
+                document.getElementById('currentSectionTitle').innerText = sectionTitles[tabId] || 'Nội dung';
+                const area = document.getElementById('sectionTextarea');
+                area.value = sectionContents[tabId] || '';
+                updateWordAndCharCount();
+            }
+        }
+
+        function updateWordAndCharCount() {
+            const txt = document.getElementById('sectionTextarea').value;
+            document.getElementById('charCount').innerText = `${txt.length} ký tự`;
+            const words = txt.trim() ? txt.trim().split(/\s+/).length : 0;
+            document.getElementById('wordCount').innerText = `${words} từ`;
+        }
+
+        // KÊNH POLLINATIONS AI KHÔNG CẦN KEY (CÓ KIỂM TRA LỖI KẾT NỐI)
+        async function callPollinationsAI(prompt, model = 'openai') {
+            const res = await fetch('https://text.pollinations.ai/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    messages: [{ role: "user", content: prompt }],
+                    model: model || "openai"
+                })
+            });
+            const text = await res.text();
+            if (!res.ok || text.startsWith('{"error"') || text.startsWith('{"status"')) {
+                let errMsg = `Lỗi HTTP ${res.status}`;
+                try {
+                    const errObj = JSON.parse(text);
+                    errMsg = errObj.error?.message || errObj.error || text;
+                } catch(e) {}
+                throw new Error(`Pollinations AI: ${errMsg}`);
+            }
+            return text;
+        }
+
+        // HÀM GỌI API CHÍNH
+        async function callAI(provider, model, apiKey, prompt) {
+            if (provider === 'pollinations') {
+                return await callPollinationsAI(prompt, model);
+            }
+
+            if (!apiKey) {
+                throw new Error(`MISSING_KEY:${provider}`);
+            }
+
+            if (provider === 'groq') {
+                const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ model: model, messages: [{ role: "user", content: prompt }] })
+                });
+                const data = await res.json();
+                if (!res.ok || data.error) {
+                    const msg = data.error ? (typeof data.error === 'string' ? data.error : data.error.message || JSON.stringify(data.error)) : res.statusText;
+                    throw new Error(`Groq API: ${msg}`);
+                }
+                if (!data.choices?.[0]?.message?.content) throw new Error("Groq không phản hồi nội dung.");
+                return data.choices[0].message.content;
+            }
+
+            if (provider === 'gemini') {
+                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                });
+                const data = await res.json();
+                if (!res.ok || data.error) {
+                    const msg = data.error ? (typeof data.error === 'string' ? data.error : data.error.message || JSON.stringify(data.error)) : res.statusText;
+                    throw new Error(`Gemini API: ${msg}`);
+                }
+                const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (!text) throw new Error("Gemini không phản hồi nội dung (có thể bị kiểm duyệt).");
+                return text;
+            }
+
+            if (provider === 'openai') {
+                const res = await fetch('https://api.openai.com/v1/chat/completions', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ model: model, messages: [{ role: "user", content: prompt }] })
+                });
+                const data = await res.json();
+                if (!res.ok || data.error) {
+                    const msg = data.error ? (typeof data.error === 'string' ? data.error : data.error.message || JSON.stringify(data.error)) : res.statusText;
+                    throw new Error(`OpenAI API: ${msg}`);
+                }
+                if (!data.choices?.[0]?.message?.content) throw new Error("OpenAI không phản hồi nội dung.");
+                return data.choices[0].message.content;
+            }
+
+            if (provider === 'openrouter') {
+                const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${apiKey}`,
+                        'Content-Type': 'application/json',
+                        'HTTP-Referer': window.location.origin || 'http://localhost',
+                        'X-Title': 'KHKT Writer Pro'
+                    },
+                    body: JSON.stringify({ model: model, messages: [{ role: "user", content: prompt }] })
+                });
+                const data = await res.json();
+                if (!res.ok || data.error) {
+                    const msg = data.error ? (typeof data.error === 'string' ? data.error : data.error.message || JSON.stringify(data.error)) : res.statusText;
+                    throw new Error(`OpenRouter API: ${msg}`);
+                }
+                if (!data.choices?.[0]?.message?.content) throw new Error("OpenRouter không phản hồi nội dung.");
+                return data.choices[0].message.content;
+            }
+
+            throw new Error(`Nền tảng ${provider} không hợp lệ.`);
+        }
+
+        // HÀM CHÍNH GỌI AI VÀ TỰ ĐỘNG CHUYỂN KÊNH DỰ PHÒNG CHUẨN XÁC
+        async function callAIWithFallback(prompt) {
+            const provider = document.getElementById('providerSelect').value;
+            const model = document.getElementById('modelSelect').value;
+            const apiKey = localStorage.getItem(`key_${provider}`);
+
+            try {
+                return await callAI(provider, model, apiKey, prompt);
+            } 
+            catch (primaryErr) {
+                console.warn(`Provider ${provider} bị lỗi:`, primaryErr.message);
+
+                // Thiếu API Key -> Nhắc mở modal cài đặt
+                if (primaryErr.message.startsWith('MISSING_KEY:')) {
+                    const provName = provider.toUpperCase();
+                    if (confirm(`Bạn chưa nhập API Key cho ${provName}.\nBạn có muốn mở bảng cài đặt API Key ngay không?`)) {
+                        openKeyModal();
+                    }
+                    throw new Error(`Vui lòng nhập API Key cho ${provName} trong mục "Cài đặt API Keys".`);
+                }
+
+                // Thử chuyển sang Groq nếu có Key Groq
+                const groqKey = localStorage.getItem('key_groq');
+                if (provider !== 'groq' && groqKey) {
+                    try {
+                        document.getElementById('loadingStatusText').innerText = `Kênh ${provider.toUpperCase()} lỗi. Đang tự động chuyển sang Groq...`;
+                        return await callAI('groq', 'llama-3.3-70b-versatile', groqKey, prompt);
+                    } catch (fallbackGroqErr) {
+                        console.warn('Fallback sang Groq thất bại:', fallbackGroqErr.message);
+                    }
+                }
+
+                // Thử chuyển sang Pollinations AI miễn phí
+                if (provider !== 'pollinations') {
+                    try {
+                        document.getElementById('loadingStatusText').innerText = `Kênh ${provider.toUpperCase()} lỗi. Đang thử kênh miễn phí Pollinations...`;
+                        return await callPollinationsAI(prompt);
+                    } catch (fallbackPollErr) {
+                        console.warn('Fallback sang Pollinations thất bại:', fallbackPollErr.message);
+                    }
+                }
+
+                // Nếu tất cả dự phòng đều lỗi -> Báo nguyên nhân gốc
+                throw primaryErr;
+            }
+        }
+
+        async function generateSectionContent() {
+            const title = document.getElementById('projectTitle').value;
+            const category = document.getElementById('projectCategory').value;
+            const problem = document.getElementById('projectProblem').value;
+            const solution = document.getElementById('projectSolution').value;
+
+            if (!title) {
+                alert("Vui lòng nhập Tên đề tài ở mục Thông tin dự án trước!");
+                switchTab('info');
+                return;
+            }
+
+            const loading = document.getElementById('editorLoading');
+            document.getElementById('loadingStatusText').innerText = "AI đang suy luận & soạn thảo nội dung...";
+            loading.classList.remove('hidden');
+
+            const sectionName = sectionTitles[currentTab];
+            const prompt = `Bạn là chuyên gia cố vấn Khoa học Kỹ thuật (KHKT). Hãy viết nội dung chuẩn xác, chuyên sâu cho mục "${sectionName}" của đề tài:
+- Tên đề tài: ${title}
+- Lĩnh vực: ${category}
+- Thực trạng: ${problem}
+- Giải pháp: ${solution}
+
+Yêu cầu: Viết văn phong khoa học, lập luận logic, trình bày chi tiết theo đúng quy chuẩn báo cáo KHKT.`;
+
+            try {
+                const result = await callAIWithFallback(prompt);
+                document.getElementById('sectionTextarea').value = result;
+                sectionContents[currentTab] = result;
+                updateWordAndCharCount();
+            } catch (err) {
+                alert("Lỗi AI: " + err.message);
+            } finally {
+                loading.classList.add('hidden');
+            }
+        }
+
+        function openSuggestTitleModal() { document.getElementById('suggestModal').classList.remove('hidden'); }
+        function closeSuggestTitleModal() { document.getElementById('suggestModal').classList.add('hidden'); }
+
+        // BÓC TÁCH JSON GỢI Ý TÊN ĐỀ TÀI AN TOÀN
+        function parseAIJsonTitles(rawText) {
+            let clean = rawText.trim().replace(/```(?:json)?/gi, '').replace(/```/g, '').trim();
+            const match = clean.match(/\[[\s\S]*\]/);
+            if (match) {
+                try {
+                    return JSON.parse(match[0]);
+                } catch(e) {}
+            }
+            return clean.split('\n')
+                .map(line => line.replace(/^[\d\-\*\.\s]+/, '').replace(/^["']|["']$/g, '').trim())
+                .filter(line => line.length > 3)
+                .slice(0, 5);
+        }
+
+        async function generateTitleIdeas() {
+            const f1 = document.getElementById('sugField1').value;
+            const f2 = document.getElementById('sugField2').value;
+            const category = document.getElementById('projectCategory').value;
+
+            const titleList = document.getElementById('titleList');
+            document.getElementById('titleResults').classList.remove('hidden');
+            titleList.innerHTML = "<p class='text-slate-500 italic text-xs'>AI đang tạo gợi ý...</p>";
+
+            const prompt = `Gợi ý 5 tên đề tài KHKT thuộc lĩnh vực "${category}". Bối cảnh: ${f1}, Vấn đề: ${f2}. Trả về duy nhất 1 mảng JSON chứa 5 chuỗi tên đề tài dạng: ["Tên 1", "Tên 2", "Tên 3", "Tên 4", "Tên 5"]`;
+
+            try {
+                const resText = await callAIWithFallback(prompt);
+                const titles = parseAIJsonTitles(resText);
+                
+                titleList.innerHTML = "";
+                titles.forEach((t) => {
+                    const item = document.createElement('div');
+                    item.className = "p-2.5 bg-slate-50 border rounded-xl hover:border-emerald-500 hover:bg-emerald-50 cursor-pointer font-medium text-slate-800 text-xs transition flex justify-between items-center";
+                    item.innerHTML = `<span>${t}</span><i data-lucide="arrow-right-circle" class="w-4 h-4 text-emerald-600"></i>`;
+                    item.onclick = () => {
+                        document.getElementById('projectTitle').value = t;
+                        closeSuggestTitleModal();
+                    };
+                    titleList.appendChild(item);
+                });
+                lucide.createIcons();
+            } catch (err) {
+                titleList.innerHTML = `<p class="text-red-500 text-xs font-semibold">Lỗi: ${err.message}</p>`;
+            }
+        }
+
+        function copyContent() {
+            const txt = document.getElementById('sectionTextarea').value;
+            if (!txt) return;
+            navigator.clipboard.writeText(txt);
+            alert("Đã sao chép nội dung vào bộ nhớ tạm!");
+        }
+
+        function exportAllToWord() {
+            const title = document.getElementById('projectTitle').value || "Bao_cao_KHKT_Toan_bo";
+            let fullHtml = `<html><head><meta charset='utf-8'></head><body><h1 style='text-align: center;'>${title}</h1>`;
+            
+            Object.keys(sectionTitles).forEach(key => {
+                if (key !== 'info' && sectionContents[key]) {
+                    fullHtml += `<h2>${sectionTitles[key]}</h2>`;
+                    fullHtml += `<div>${sectionContents[key].replace(/\n/g, '<br>')}</div><hr>`;
+                }
+            });
+            fullHtml += `</body></html>`;
+
+            const converted = htmlDocx.asBlob(fullHtml);
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(converted);
+            link.download = `${title.replace(/\s+/g, '_')}.docx`;
+            link.click();
+        }
+    </script>
+</body>
+</html>
