@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartSun - Hệ Thống Định Hướng Ngành Nghề Thông Minh</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Marked JS for Markdown Parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        sun: {
+                            50: '#fffbeedb',
+                            100: '#fef3c7',
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                            700: '#b45309',
+                        },
+                        slateDark: '#0f172a',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            color: #f8fafc;
+            min-height: 100vh;
+        }
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        }
+        .sun-gradient-text {
+            background: linear-gradient(135deg, #fef3c7 0%, #fbbf24 50%, #f59e0b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .sun-button {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            transition: all 0.3s ease;
+        }
+        .sun-button:hover {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.4);
+            transform: translateY(-1px);
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #f59e0b;
+        }
+        .markdown-body h1, .markdown-body h2, .markdown-body h3 {
+            color: #fbbf24;
+            font-weight: 700;
+            margin-top: 1.25rem;
+            margin-bottom: 0.75rem;
+        }
+        .markdown-body h2 {
+            font-size: 1.35rem;
+            border-bottom: 1px solid rgba(251, 191, 36, 0.2);
+            padding-bottom: 0.4rem;
+        }
+        .markdown-body h3 {
+            font-size: 1.15rem;
+        }
+        .markdown-body p {
+            margin-bottom: 0.85rem;
+            line-height: 1.7;
+            color: #e2e8f0;
+        }
+        .markdown-body ul, .markdown-body ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+            list-style-type: disc;
+        }
+        .markdown-body li {
+            margin-bottom: 0.4rem;
+        }
+        .markdown-body strong {
+            color: #fef3c7;
+        }
+        .markdown-body blockquote {
+            border-left: 4px solid #f59e0b;
+            padding-left: 1rem;
+            background: rgba(245, 158, 11, 0.05);
+            border-radius: 0 8px 8px 0;
+            margin: 1rem 0;
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <!-- Header Navbar -->
+    <header class="sticky top-0 z-40 glass-panel border-b border-slate-700/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <div class="flex items-center gap-3 cursor-pointer" onclick="window.location.reload()">
+                <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-amber-500 to-yellow-300 flex items-center justify-center shadow-lg shadow-amber-500/20">
+                    <i class="fa-solid font-bold text-slate-900 text-2xl fa-sun"></i>
+                </div>
+                <div>
+                    <span class="text-2xl font-extrabold tracking-tight sun-gradient-text">SmartSun</span>
+                    <span class="block text-[10px] tracking-widest text-slate-400 font-semibold uppercase">Hệ Thống Orient-Pro</span>
+                </div>
+            </div>
+
+            <!-- Header Status & Actions -->
+            <div class="flex items-center gap-3">
+                <div id="licenseBadge" class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 text-xs font-medium text-slate-300">
+                    <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+                    <span id="badgeText">Chế độ Miễn phí</span>
+                </div>
+
+                <button onclick="openAuthModal()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 border border-slate-700 text-amber-400 flex items-center gap-2 transition-all">
+                    <i class="fa-solid fa-key"></i>
+                    <span class="hidden md:inline">Xác Thực Mã</span>
+                </button>
+
+                <button onclick="toggleChatDrawer()" class="relative p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-amber-400 transition-all" title="Trợ lý tư vấn">
+                    <i class="fa-solid fa-comments text-base"></i>
+                    <span class="absolute -top-1 -right-1 w-3 h-3 bg-amber-500 rounded-full border-2 border-slate-900"></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- Intro Banner -->
+        <div class="relative overflow-hidden rounded-3xl glass-panel p-6 sm:p-10 mb-8 border border-amber-500/20">
+            <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="max-w-3xl">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-semibold mb-4">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> Phân Tích Đa Chiều Chuẩn IKIGAI
+                </div>
+                <h1 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-3">
+                    Khám Phá Nghề Nghiệp Tương Lai Cùng <span class="sun-gradient-text">SmartSun</span>
+                </h1>
+                <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+                    Điền đầy đủ thông tin về bản thân, khả năng học tập và điều kiện thực tế. Hệ thống phân tích SmartSun sẽ tổng hợp dữ liệu để đưa ra lộ trình học tập, chọn trường và định hướng phát triển nghề nghiệp tối ưu cho bạn.
+                </p>
+            </div>
+        </div>
+
+        <!-- System Authentication Alert (If Unactivated) -->
+        <div id="trialNoticeBanner" class="mb-8 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="p-2.5 bg-amber-500/20 rounded-xl text-amber-400">
+                    <i class="fa-solid fa-shield-halved text-xl"></i>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h4 class="text-sm font-bold text-amber-300">Hệ Thống Đang Ở Chế Độ Khám Phá Thử Nghiệm</h4>
+                        <span id="trialCountBadge" class="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-[11px] font-semibold border border-amber-500/40">
+                            Lượt dùng thử: 10/10
+                        </span>
+                    </div>
+                    <p class="text-xs text-slate-300 mt-0.5">Giới hạn 10 lượt phân tích/ngày. Nhập Mã Kích Hoạt để xem báo cáo toàn diện 100% & sử dụng không giới hạn.</p>
+                </div>
+            </div>
+            <button onclick="openAuthModal()" class="whitespace-nowrap px-4 py-2 text-xs font-bold rounded-xl sun-button text-slate-950 shadow-md">
+                Kích Hoạt Mã Ngay
+            </button>
+        </div>
+
+        <!-- Form & Result Section Container -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+            <!-- Left Panel: Form Criteria Input (5 Cols) -->
+            <div class="lg:col-span-5">
+                <div class="glass-panel rounded-3xl p-6 sm:p-8 sticky top-28">
+                    <div class="flex items-center justify-between pb-4 mb-6 border-b border-slate-700">
+                        <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-sliders text-amber-400"></i> Tiêu Chí Định Hướng
+                        </h2>
+                        <span class="text-xs text-slate-400">10 Tiêu chí chọn nghề</span>
+                    </div>
+
+                    <form id="orientationForm" onsubmit="handleAnalysisSubmit(event)" class="space-y-5 text-sm">
+
+                        <!-- Group 1: Bản Thân & Học Tập -->
+                        <div class="space-y-4">
+                            <div class="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
+                                <i class="fa-solid fa-user-gear"></i> 1. Yếu Tố Bản Thân & Học Tập
+                            </div>
+
+                            <!-- Sở thích & Đam mê -->
+                            <div>
+                                <label class="block text-xs font-medium text-slate-300 mb-1">Sở thích & Lĩnh vực đam mê *</label>
+                                <textarea id="interests" rows="2" required placeholder="Ví dụ: Thích công nghệ, sáng tạo nội dung, thích làm việc với con người, vẽ, kinh doanh..." class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3 py-2 text-white placeholder-slate-500 focus:outline-none focus:border-amber-500 transition-colors"></textarea>
+                            </div>
+
+                            <!-- Môn học thế mạnh & Khối thi dự kiến -->
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-300 mb-1">Môn học thế mạnh *</label>
+                                    <input type="text" id="strongSubjects" required placeholder="Toán, Lý, Anh..." class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3 py-2 text-white placeholder-slate-500 focus:outline-none focus:border-amber-500 transition-colors">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-300 mb-1">Khối thi / Tổ hợp dự kiến</label>
+                                    <input type="text" id="targetExamBlocks" placeholder="A00, A01, D01, C00..." class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3 py-2 text-white placeholder-slate-500 focus:outline-none focus:border-amber-500 transition-colors" value="A01 (Toán, Lý, Anh)">
+                                </div>
+                            </div>
+
+                            <!-- Học lực & Trình độ Ngoại ngữ -->
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-300 mb-1">Học lực trung bình</label>
+                                    <select id="academicRank" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-500 transition-colors">
+                                        <option value="Xuất sắc">Xuất sắc</option>
+                                        <option value="Giỏi" selected>Giỏi</option>
+                                        <option value="Khá">Khá</option>
+                                        <option value="Trung bình">Trung bình</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-300 mb-1">Trình độ Ngoại ngữ</label>
+                                    <select id="foreignLang" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-500 transition-colors">
+                                        <option value="Khá / Đã có IELTS/TOEIC">Khá (Có bằng/IELTS)</option>
+                                        <option value="Trung bình (Đủ thi tốt nghiệp)" selected>Trung bình (Tốt nghiệp)</option>
+                                        <option value="Chưa tốt / Đang mất gốc">Cần cải thiện thêm</option>
+                                        <option value="Biết thêm Tiếng Trung / Nhật / Hàn">Biết thêm tiếng thứ 3</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Kỹ năng mềm -->
+                            <div>
+                                <label class="block text-xs font-medium text-slate-300 mb-1">Kỹ năng mềm nổi trội</label>
+                                <input type="text" id="softSkills" placeholder="Giao tiếp tốt, quản lý thời gian, tư duy phản biện, làm việc nhóm..." class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3 py-2 text-white placeholder-slate-500 focus:outline-none focus:border-amber-500 transition-colors">
+                            </div>
+                        </div>
+
+                        <!-- Group 2: Tính Cách & Định Hướng Môi Trường -->
+                        <div class="space-y-4 pt-2 border-t border-slate-800">
+                            <div class="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
+                                <i class="fa-solid fa-briefcase"></i> 2. Tính Cách & Kỳ Vọng Công Việc
+                            </div>
+
+                            <!-- Tính cách & Phong cách làm việc -->
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-300 mb-1">Xu hướng tính cách</label>
+                                    <select id="personality" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-500 transition-colors">
+                                        <option value="Hướng ngoại (Năng động, thích giao tiếp)">Hướng ngoại</option>
+                                        <option value="Hướng nội (Cẩn thận, tập trung độc lập)">Hướng nội</option>
+                                        <option value="Cân bằng (Linh hoạt theo hoàn cảnh)" selected>Cân bằng</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-300 mb-1">Phong cách làm việc</label>
+                                    <select id="workStyle" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-500 transition-colors">
+                                        <option value="Thích sáng tạo & Đổi mới">Sáng tạo & Đổi mới</option>
+                                        <option value="Thích ổn định & Quy chuẩn" selected>Ổn định & Quy chuẩn</option>
+                                        <option value="Thích thử thách & Kinh doanh">Thử thách & Kinh doanh</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Môi trường làm việc mong muốn & Định hướng gia đình -->
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-300 mb-1">Môi trường kỳ vọng</label>
+                                    <select id="workEnvGoal" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-500 transition-colors">
+                                        <option value="Công ty đa quốc gia / FDI" selected>Công ty Đa quốc gia / FDI</option>
+                                        <option value="Doanh nghiệp tư nhân linh hoạt">Doanh nghiệp Tư nhân</option>
+                                        <option value="Cơ quan nhà nước / Đơn vị công">Cơ quan Nhà nước</option>
+                                        <option value="Khởi nghiệp / Freelance / Tự do">Freelance / Khởi nghiệp</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-300 mb-1">Định hướng gia đình</label>
+                                    <select id="familyOrientation" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-500 transition-colors">
+                                        <option value="Gia đình tôn trọng quyết định cá nhân" selected>Tự do lựa chọn</option>
+                                        <option value="Gia đình muốn chọn ngành an toàn/truyền thống">Mong ngành an toàn</option>
+                                        <option value="Có định hướng sẵn theo nghề gia đình">Nối nghiệp gia đình</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Group 3: Nhu Cầu & Điều Kiện Thực Tế -->
+                        <div class="space-y-4 pt-2 border-t border-slate-800">
+                            <div class="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
+                                <i class="fa-solid fa-earth-asia"></i> 3. Nhu Cầu & Điều Kiện
+                            </div>
+
+                            <!-- Giá trị ưu tiên -->
+                            <div>
+                                <label class="block text-xs font-medium text-slate-300 mb-1">Mục tiêu cá nhân hàng đầu</label>
+                                <select id="priorityValue" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-500 transition-colors">
+                                    <option value="Thu nhập cao & Cơ hội thăng tiến" selected>Thu nhập cao & Thăng tiến</option>
+                                    <option value="Công việc ổn định & Ít rủi ro">Ổn định & Ít rủi ro</option>
+                                    <option value="Môi trường tự do & Tự chủ">Môi trường tự do & Tự chủ</option>
+                                    <option value="Đóng góp cho xã hội & Giá trị nhân văn">Đóng góp giá trị xã hội</option>
+                                </select>
+                            </div>
+
+                            <!-- Khu vực học tập & Tài chính -->
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-300 mb-1">Miền ưu tiên học tập</label>
+                                    <select id="regionPreference" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-500 transition-colors">
+                                        <option value="Cả 3 miền (Toàn quốc)" selected>Toàn Quốc (3 Miền)</option>
+                                        <option value="Miền Bắc">Miền Bắc</option>
+                                        <option value="Miền Trung">Miền Trung</option>
+                                        <option value="Miền Nam">Miền Nam</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-300 mb-1">Tài chính gia đình</label>
+                                    <select id="financialCondition" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-500 transition-colors">
+                                        <option value="Trung bình (Cần cân đối chi phí)">Trung bình</option>
+                                        <option value="Khá (Thoải mái học phí công lập/tư thục)" selected>Khá</option>
+                                        <option value="Tốt (Có thể học quốc tế/liên kết)">Tốt / Cao</option>
+                                        <option value="Cần cân nhắc chi phí tối thiểu">Cần tiết kiệm</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Sức khỏe & Đặc thù -->
+                            <div>
+                                <label class="block text-xs font-medium text-slate-300 mb-1">Tình trạng sức khỏe / Đặc thù khác</label>
+                                <input type="text" id="healthCondition" placeholder="Bình thường / Cận thị / Thể lực tốt..." class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3 py-2 text-white placeholder-slate-500 focus:outline-none focus:border-amber-500 transition-colors" value="Sức khỏe tốt">
+                            </div>
+                        </div>
+
+                        <!-- Action Submit Button -->
+                        <button type="submit" id="analyzeBtn" class="w-full py-3.5 px-4 rounded-xl font-bold text-slate-950 sun-button flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20 text-base mt-6">
+                            <i class="fa-solid fa-compass"></i>
+                            <span>Phân Tích & Định Hướng Ngành Nghề Chi Tiết</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Right Panel: Output Analysis Result (7 Cols) -->
+            <div class="lg:col-span-7">
+
+                <!-- Placeholder State before submission -->
+                <div id="resultPlaceholder" class="glass-panel rounded-3xl p-8 sm:p-12 text-center flex flex-col items-center justify-center min-h-[500px]">
+                    <div class="w-20 h-20 rounded-3xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 text-3xl mb-6 shadow-inner">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Sẵn Sàng Phân Tích Báo Cáo Định Hướng</h3>
+                    <p class="text-slate-400 text-sm max-w-md mb-6 leading-relaxed">
+                        Hãy nhập đầy đủ sở thích, học lực và các nguyện vọng ở khung bên trái. Hệ thống SmartSun sẽ tự động tổng hợp để đưa ra phân tích chi tiết dành riêng cho bạn.
+                    </p>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 w-full max-w-md text-xs text-slate-300">
+                        <div class="p-3 bg-slate-800/60 rounded-xl border border-slate-700/60 flex items-center gap-2">
+                            <i class="fa-solid fa-check text-amber-400"></i> Ngành nghề phù hợp
+                        </div>
+                        <div class="p-3 bg-slate-800/60 rounded-xl border border-slate-700/60 flex items-center gap-2">
+                            <i class="fa-solid fa-check text-amber-400"></i> Trường đào tạo 3 miền
+                        </div>
+                        <div class="p-3 bg-slate-800/60 rounded-xl border border-slate-700/60 flex items-center gap-2 col-span-2 sm:col-span-1">
+                            <i class="fa-solid fa-check text-amber-400"></i> Lộ trình đại học
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Loading Spinner State -->
+                <div id="resultLoading" class="hidden glass-panel rounded-3xl p-12 text-center flex flex-col items-center justify-center min-h-[500px]">
+                    <div class="relative w-16 h-16 mb-6">
+                        <div class="absolute inset-0 rounded-full border-4 border-amber-500/20"></div>
+                        <div class="absolute inset-0 rounded-full border-4 border-amber-500 border-t-transparent animate-spin"></div>
+                        <div class="absolute inset-0 flex items-center justify-center text-amber-400 font-bold">
+                            <i class="fa-solid fa-sun animate-pulse text-lg"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-1">SmartSun Đang Đấu Nối & Phân Tích Dữ Liệu...</h3>
+                    <p class="text-xs text-slate-400 animate-pulse">Vui lòng chờ trong giây lát để hệ thống xây dựng báo cáo toàn diện</p>
+                </div>
+
+                <!-- Active Result Display Area -->
+                <div id="resultDisplay" class="hidden glass-panel rounded-3xl p-6 sm:p-8 space-y-6">
+
+                    <!-- Result Header -->
+                    <div class="flex items-center justify-between border-b border-slate-700 pb-4">
+                        <div class="flex items-center gap-3">
+                            <div class="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400">
+                                <i class="fa-solid fa-file-invoice text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-white">Báo Cáo Định Hướng Chi Tiết</h3>
+                                <p class="text-xs text-slate-400">Phân tích cá nhân hóa bởi SmartSun System</p>
+                            </div>
+                        </div>
+                        <button onclick="window.print()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs text-slate-300 flex items-center gap-1.5">
+                            <i class="fa-solid fa-print"></i> In Báo Cáo
+                        </button>
+                    </div>
+
+                    <!-- Mandatory Official Disclaimer Notice -->
+                    <div class="p-3.5 rounded-xl bg-blue-500/10 border border-blue-500/30 flex items-start gap-3 text-xs text-blue-200">
+                        <i class="fa-solid fa-circle-info text-blue-400 text-sm mt-0.5"></i>
+                        <div>
+                            <span class="font-bold">Lưu ý quan trọng từ Ban Quản Lý:</span> Đối với thông tin điểm chuẩn, chỉ tiêu và học phí chi tiết từng ngành, học sinh vui lòng tra cứu trực tiếp tại <strong>Cổng thông tin tuyển sinh chính thức</strong> của từng trường Đại học/Cao đẳng để đảm bảo độ chính xác tuyệt đối.
+                        </div>
+                    </div>
+
+                    <!-- Markdown Content Render Container -->
+                    <div id="markdownOutput" class="markdown-body"></div>
+
+                    <!-- Truncated Teaser CTA Box (Visible if Unactivated) -->
+                    <div id="truncatedTeaserBox" class="hidden relative overflow-hidden rounded-2xl bg-gradient-to-br from-amber-500/20 via-slate-800 to-slate-900 border-2 border-amber-500/50 p-6 text-center space-y-4 shadow-xl">
+                        <div class="inline-flex p-3 rounded-full bg-amber-500/20 text-amber-400 text-2xl mb-1">
+                            <i class="fa-solid fa-lock"></i>
+                        </div>
+                        <h4 class="text-lg font-extrabold text-white">Báo Cáo Đang Được Mở Khóa Một Phần!</h4>
+                        <p class="text-xs sm:text-sm text-slate-300 max-w-lg mx-auto leading-relaxed">
+                            Bạn vừa đọc 50% phần phân tích định hướng ban đầu. Để xem trọn vẹn lộ trình <strong>chương trình học Đại học chi tiết, danh sách các vị trí việc làm sau ra trường & chiến lược chọn trường chuẩn xác 100%</strong>, vui lòng liên hệ Admin để kích hoạt Mã thiết bị.
+                        </p>
+                        <div class="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
+                            <button onclick="openZaloContact()" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg transition-all">
+                                <i class="fa-solid fa-comment-dots text-base"></i> Liên Hệ Admin Kích Hoạt (Zalo)
+                            </button>
+                            <button onclick="openAuthModal()" class="w-full sm:w-auto px-6 py-3 rounded-xl sun-button text-slate-950 font-bold text-xs flex items-center justify-center gap-2 shadow-lg">
+                                <i class="fa-solid fa-key"></i> Nhập Mã Khóa Xác Thực
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- System Key Authentication Modal -->
+    <div id="authModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md opacity-0 pointer-events-none transition-all duration-300">
+        <div class="glass-panel w-full max-w-md rounded-3xl p-6 sm:p-8 border border-amber-500/30 relative shadow-2xl transform scale-95 transition-all duration-300" id="authModalContainer">
+            
+            <button onclick="closeAuthModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="text-center mb-6">
+                <div class="w-14 h-14 rounded-2xl bg-amber-500/20 border border-amber-500/40 text-amber-400 flex items-center justify-center text-2xl mx-auto mb-3">
+                    <i class="fa-solid fa-microchip"></i>
+                </div>
+                <h3 class="text-xl font-bold text-white">Xác Thực Mã Dịch Vụ SmartSun</h3>
+                <p class="text-xs text-slate-400 mt-1">Liên kết thiết bị để sử dụng đầy đủ tính năng phân tích cao cấp</p>
+            </div>
+
+            <!-- Device Code Box -->
+            <div class="mb-5 p-4 rounded-2xl bg-slate-900 border border-slate-700/80">
+                <div class="flex items-center justify-between text-xs text-slate-400 mb-1">
+                    <span>Mã Thiết Bị Của Bạn:</span>
+                    <span class="text-[10px] bg-slate-800 text-amber-400 px-2 py-0.5 rounded font-mono">Tự động tạo</span>
+                </div>
+                <div class="flex items-center justify-between gap-2">
+                    <span id="deviceCodeDisplay" class="font-mono text-sm sm:text-base font-bold text-amber-300 tracking-wider">SUN-XXXX-XXXX</span>
+                    <button onclick="copyDeviceCode()" id="copyBtn" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 flex items-center gap-1.5 border border-slate-700">
+                        <i class="fa-regular fa-copy"></i> Copy
+                    </button>
+                </div>
+            </div>
+
+            <!-- Activation Key Input -->
+            <form onsubmit="handleKeyVerification(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-medium text-slate-300 mb-1.5">Nhập Khóa Xác Thực (Key)</label>
+                    <input type="text" id="activationKeyInput" required placeholder="Nhập khóa kích hoạt được cấp..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white placeholder-slate-500 font-mono text-sm focus:outline-none focus:border-amber-500 transition-colors">
+                </div>
+
+                <div id="modalStatusMsg" class="hidden text-xs p-3 rounded-xl border"></div>
+
+                <button type="submit" id="verifySubmitBtn" class="w-full py-3 rounded-xl sun-button font-bold text-slate-950 text-sm flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-lock-open"></i> Kiểm Tra & Kích Hoạt
+                </button>
+            </form>
+
+            <div class="mt-5 pt-4 border-t border-slate-800 text-center">
+                <p class="text-xs text-slate-400 mb-2">Chưa có Mã Kích Hoạt cho thiết bị này?</p>
+                <button onclick="openZaloContact()" class="text-xs font-bold text-amber-400 hover:underline flex items-center justify-center gap-1.5 mx-auto">
+                    <i class="fa-solid fa-phone-volume"></i> Liên hệ Quản trị viên cấp quyền (Zalo)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Chatbot Assistant Drawer -->
+    <div id="chatDrawer" class="fixed right-0 bottom-0 top-0 w-full sm:w-[420px] z-50 glass-panel border-l border-slate-700/80 transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col shadow-2xl">
+        
+        <!-- Chat Header -->
+        <div class="p-4 border-b border-slate-700/80 flex items-center justify-between bg-slate-900/60">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-400 flex items-center justify-center">
+                    <i class="fa-solid fa-robot"></i>
+                </div>
+                <div>
+                    <h4 class="text-sm font-bold text-white">SmartSun Assistant</h4>
+                    <span class="text-[10px] text-emerald-400 flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Đang trực tuyến
+                    </span>
+                </div>
+            </div>
+            <button onclick="toggleChatDrawer()" class="p-2 text-slate-400 hover:text-white rounded-lg">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+        </div>
+
+        <!-- Chat History Messages Container -->
+        <div id="chatMessages" class="flex-grow p-4 overflow-y-auto space-y-3.5 text-xs">
+            <div class="flex gap-2.5">
+                <div class="w-7 h-7 rounded-lg bg-amber-500/20 border border-amber-500/30 text-amber-400 flex-shrink-0 flex items-center justify-center">
+                    <i class="fa-solid fa-sun text-xs"></i>
+                </div>
+                <div class="bg-slate-800/90 border border-slate-700 p-3 rounded-2xl rounded-tl-none text-slate-200 max-w-[85%] leading-relaxed">
+                    Xin chào! Tôi là Trợ lý Tư vấn SmartSun. Bạn có thể chọn câu hỏi nhanh bên dưới hoặc nhập câu hỏi cụ thể nhé:
+                </div>
+            </div>
+
+            <!-- Quick Question Chips -->
+            <div class="pt-2 flex flex-wrap gap-1.5" id="quickChatChips">
+                <button onclick="sendQuickChat('Nên chọn ngành theo đam mê hay theo thu nhập trước mắt?')" class="px-2.5 py-1.5 rounded-lg bg-amber-500/10 border border-amber-500/30 hover:bg-amber-500/20 text-amber-300 text-[11px] text-left transition-all">
+                    💡 Đam mê vs Thu nhập?
+                </button>
+                <button onclick="sendQuickChat('Cách chọn khối thi A00, A01, D01 tối ưu nhất?')" class="px-2.5 py-1.5 rounded-lg bg-amber-500/10 border border-amber-500/30 hover:bg-amber-500/20 text-amber-300 text-[11px] text-left transition-all">
+                    📚 Chọn Khối Thi Chuẩn?
+                </button>
+                <button onclick="sendQuickChat('Những ngành nghề nào ít nguy cơ bị AI thay thế trong 5 năm tới?')" class="px-2.5 py-1.5 rounded-lg bg-amber-500/10 border border-amber-500/30 hover:bg-amber-500/20 text-amber-300 text-[11px] text-left transition-all">
+                    🤖 Ngành HOT Chống AI?
+                </button>
+                <button onclick="sendQuickChat('Làm sao để thuyết phục cha mẹ khi định hướng chọn ngành của mình khác cha mẹ?')" class="px-2.5 py-1.5 rounded-lg bg-amber-500/10 border border-amber-500/30 hover:bg-amber-500/20 text-amber-300 text-[11px] text-left transition-all">
+                    👨‍👩‍👦 Thuyết phục Cha Mẹ?
+                </button>
+            </div>
+        </div>
+
+        <!-- Chat Input Bar -->
+        <div class="p-3.5 border-t border-slate-700/80 bg-slate-900/80">
+            <form onsubmit="handleSendMessage(event)" class="flex items-center gap-2">
+                <input type="text" id="chatInput" placeholder="Hỏi thêm về ngành, trường, khối thi..." class="flex-grow bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-500">
+                <button type="submit" class="p-2.5 rounded-xl sun-button text-slate-950 font-bold flex-shrink-0">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </form>
+            <span id="chatLimitHint" class="block text-[10px] text-slate-400 text-center mt-2">Hệ thống hỗ trợ tự động SmartSun Orient-Engine</span>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-auto border-t border-slate-800 bg-slate-950/60 py-6 text-center text-xs text-slate-500">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-2">
+                <span class="font-bold text-amber-400">SmartSun System</span>
+                <span>© 2026. Tất cả các quyền được bảo hộ.</span>
+            </div>
+            <div class="flex items-center gap-4 text-slate-400">
+                <button onclick="openAuthModal()" class="hover:text-amber-400">Kiểm tra Mã Dịch Vụ</button>
+                <span>•</span>
+                <button onclick="openZaloContact()" class="hover:text-amber-400">Hỗ Trợ Kỹ Thuật</button>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Updated Primary Service Key
+        const getSystemCoreToken = () => "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";
+
+        // Updated Data Source Endpoint for Device-Key Verification
+        const DATA_VERIFICATION_ENDPOINT = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ5caItjqvz4wVa5eZGFx_Tsm-8KM8ImX7ALjhGMesCS7jQF47W5WASJruFNfOKUxS1vO_OU_5twdpt/pub?output=csv";
+
+        // Admin Contact Config
+        const ADMIN_ZALO_LINK = "https://zalo.me/0799457172";
+
+        // Daily Limit Configuration
+        const DAILY_TRIAL_LIMIT = 10;
+        const DAILY_CHAT_TRIAL_LIMIT = 5;
+
+        // State Management
+        let userDeviceId = "";
+        let isSystemActivated = false;
+        let verifiedKey = "";
+
+        window.addEventListener('DOMContentLoaded', () => {
+            initDeviceId();
+            checkExistingLicense();
+            updateTrialCountUI();
+            updateChatCountUI();
+        });
+
+        // Helper functions for daily trial tracking
+        function getTodayDateStr() {
+            return new Date().toISOString().slice(0, 10);
+        }
+
+        function getTrialUsage() {
+            const today = getTodayDateStr();
+            const data = localStorage.getItem('SMARTSUN_TRIAL_USAGE');
+            if (data) {
+                try {
+                    const parsed = JSON.parse(data);
+                    if (parsed.date === today) {
+                        return parsed.count || 0;
+                    }
+                } catch (e) {}
+            }
+            return 0;
+        }
+
+        function incrementTrialUsage() {
+            const today = getTodayDateStr();
+            const current = getTrialUsage();
+            localStorage.setItem('SMARTSUN_TRIAL_USAGE', JSON.stringify({
+                date: today,
+                count: current + 1
+            }));
+            updateTrialCountUI();
+        }
+
+        function updateTrialCountUI() {
+            const badgeEl = document.getElementById('trialCountBadge');
+            if (badgeEl) {
+                const used = getTrialUsage();
+                const remaining = Math.max(0, DAILY_TRIAL_LIMIT - used);
+                badgeEl.innerText = `Còn ${remaining}/${DAILY_TRIAL_LIMIT} lượt dùng thử hôm nay`;
+            }
+        }
+
+        // Helper functions for daily chatbot trial tracking (5 limit)
+        function getChatTrialUsage() {
+            const today = getTodayDateStr();
+            const data = localStorage.getItem('SMARTSUN_CHAT_TRIAL_USAGE');
+            if (data) {
+                try {
+                    const parsed = JSON.parse(data);
+                    if (parsed.date === today) {
+                        return parsed.count || 0;
+                    }
+                } catch (e) {}
+            }
+            return 0;
+        }
+
+        function incrementChatTrialUsage() {
+            const today = getTodayDateStr();
+            const current = getChatTrialUsage();
+            localStorage.setItem('SMARTSUN_CHAT_TRIAL_USAGE', JSON.stringify({
+                date: today,
+                count: current + 1
+            }));
+            updateChatCountUI();
+        }
+
+        function updateChatCountUI() {
+            const chatLimitHint = document.getElementById('chatLimitHint');
+            if (chatLimitHint) {
+                if (isSystemActivated) {
+                    chatLimitHint.innerText = "Hệ thống hỗ trợ tự động SmartSun Orient-Engine (Bản đầy đủ)";
+                    chatLimitHint.className = "block text-[10px] text-emerald-400 text-center mt-2 font-medium";
+                } else {
+                    const used = getChatTrialUsage();
+                    const remaining = Math.max(0, DAILY_CHAT_TRIAL_LIMIT - used);
+                    chatLimitHint.innerText = `Bản dùng thử: Còn ${remaining}/${DAILY_CHAT_TRIAL_LIMIT} lượt hỏi chat hôm nay`;
+                    chatLimitHint.className = "block text-[10px] text-amber-400/90 text-center mt-2 font-medium";
+                }
+            }
+        }
+
+        // Generate stable Unique Device Identifier based on local traits
+        function initDeviceId() {
+            let localId = localStorage.getItem('SMARTSUN_DEVICE_ID');
+            if (!localId) {
+                const nav = window.navigator;
+                const str = (nav.userAgent || '') + (nav.language || '') + (screen.width || '') + (screen.height || '');
+                let hash = 0;
+                for (let i = 0; i < str.length; i++) {
+                    hash = ((hash << 5) - hash) + str.charCodeAt(i);
+                    hash |= 0;
+                }
+                const positiveHash = Math.abs(hash).toString(16).toUpperCase().padStart(8, '0');
+                localId = `SUN-${positiveHash.substring(0, 4)}-${positiveHash.substring(4, 8)}`;
+                localStorage.setItem('SMARTSUN_DEVICE_ID', localId);
+            }
+            userDeviceId = localId;
+            document.getElementById('deviceCodeDisplay').innerText = userDeviceId;
+        }
+
+        // Check stored license key on startup
+        async function checkExistingLicense() {
+            const savedKey = localStorage.getItem('SMARTSUN_ACTIVATION_KEY');
+            if (savedKey) {
+                const isValid = await verifyKeyWithDatabase(userDeviceId, savedKey);
+                if (isValid) {
+                    activateFullMode(savedKey);
+                } else {
+                    localStorage.removeItem('SMARTSUN_ACTIVATION_KEY');
+                    updateLicenseUI(false);
+                }
+            } else {
+                updateLicenseUI(false);
+            }
+        }
+
+        function updateLicenseUI(activated) {
+            isSystemActivated = activated;
+            const badgeText = document.getElementById('badgeText');
+            const licenseBadge = document.getElementById('licenseBadge');
+            const trialBanner = document.getElementById('trialNoticeBanner');
+
+            if (activated) {
+                badgeText.innerText = "Bản Quyền Đã Kích Hoạt";
+                licenseBadge.className = "hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-xs font-medium text-emerald-400";
+                if (trialBanner) trialBanner.classList.add('hidden');
+            } else {
+                badgeText.innerText = "Chế độ Khám Phá";
+                licenseBadge.className = "hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-xs font-medium text-amber-400";
+                if (trialBanner) trialBanner.classList.remove('hidden');
+                updateTrialCountUI();
+            }
+            updateChatCountUI();
+        }
+
+        function activateFullMode(key) {
+            verifiedKey = key;
+            localStorage.setItem('SMARTSUN_ACTIVATION_KEY', key);
+            updateLicenseUI(true);
+        }
+
+        async function verifyKeyWithDatabase(deviceId, keyToTest) {
+            try {
+                const response = await fetch(DATA_VERIFICATION_ENDPOINT + `&t=${Date.now()}`);
+                if (!response.ok) return false;
+                const csvText = await response.text();
+                
+                // Parse CSV rows
+                const lines = csvText.split(/\r?\n/);
+                for (let i = 0; i < lines.length; i++) {
+                    const line = lines[i].trim();
+                    if (!line) continue;
+                    
+                    // Support commas, pipes or tabs
+                    const parts = line.split(/[,|\t]+/);
+                    if (parts.length >= 2) {
+                        const csvDevice = parts[0].trim();
+                        const csvKey = parts[1].trim();
+
+                        // Logic kiểm tra bảo mật: BẮT BUỘC đúng đồng thời CẢ Mã Thiết Bị VÀ Mã Key
+                        if (
+                            csvDevice.toLowerCase() === deviceId.toLowerCase() &&
+                            csvKey.toLowerCase() === keyToTest.trim().toLowerCase()
+                        ) {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            } catch (err) {
+                console.error("Verification connection error:", err);
+                return false;
+            }
+        }
+
+        // Modal Auth Action Handler
+        async function handleKeyVerification(e) {
+            e.preventDefault();
+            const inputKey = document.getElementById('activationKeyInput').value.trim();
+            const msgEl = document.getElementById('modalStatusMsg');
+            const submitBtn = document.getElementById('verifySubmitBtn');
+
+            if (!inputKey) return;
+
+            msgEl.className = "text-xs p-3 rounded-xl border bg-slate-800 text-amber-300 border-amber-500/30 block";
+            msgEl.innerText = "Đang kết nối đối soát dữ liệu máy chủ...";
+            submitBtn.disabled = true;
+
+            const isValid = await verifyKeyWithDatabase(userDeviceId, inputKey);
+
+            if (isValid) {
+                activateFullMode(inputKey);
+                msgEl.className = "text-xs p-3 rounded-xl border bg-emerald-500/20 text-emerald-300 border-emerald-500/40 block";
+                msgEl.innerText = "Xác thực thành công! Hệ thống đã được nâng cấp bản quyền đầy đủ.";
+                setTimeout(() => {
+                    closeAuthModal();
+                    msgEl.classList.add('hidden');
+                    submitBtn.disabled = false;
+                }, 1200);
+            } else {
+                msgEl.className = "text-xs p-3 rounded-xl border bg-rose-500/20 text-rose-300 border-rose-500/40 block";
+                msgEl.innerText = "Mã xác thực không hợp lệ hoặc không thuộc về Mã Thiết Bị này. Vui lòng liên hệ Admin qua Zalo.";
+                submitBtn.disabled = false;
+            }
+        }
+
+        function openAuthModal() {
+            const modal = document.getElementById('authModal');
+            const container = document.getElementById('authModalContainer');
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            container.classList.remove('scale-95');
+            container.classList.add('scale-100');
+        }
+
+        function closeAuthModal() {
+            const modal = document.getElementById('authModal');
+            const container = document.getElementById('authModalContainer');
+            container.classList.remove('scale-100');
+            container.classList.add('scale-95');
+            modal.classList.add('opacity-0', 'pointer-events-none');
+        }
+
+        function copyDeviceCode() {
+            navigator.clipboard.writeText(userDeviceId);
+            const copyBtn = document.getElementById('copyBtn');
+            copyBtn.innerHTML = `<i class="fa-solid fa-check text-emerald-400"></i> Đã chép`;
+            setTimeout(() => {
+                copyBtn.innerHTML = `<i class="fa-regular fa-copy"></i> Copy`;
+            }, 2000);
+        }
+
+        function openZaloContact() {
+            window.open(ADMIN_ZALO_LINK, '_blank');
+        }
+
+        function toggleChatDrawer() {
+            const drawer = document.getElementById('chatDrawer');
+            drawer.classList.toggle('translate-x-full');
+        }
+
+        async function querySmartSunEngine(promptText, isTruncateExpected = false) {
+            const endpoint = "https://api.groq.com/openai/v1/chat/completions";
+            const systemRoleInstruction = `Bạn là Trợ lý Định hướng Nghề nghiệp Cao cấp SmartSun dành cho học sinh Việt Nam. 
+Hãy tư vấn cực kỳ chi tiết, mạch lạc, chính xác, truyền cảm hứng và mang tính ứng dụng thực tế cao.
+LƯU Ý BẮT BUỘC KHÔNG ĐƯỢC VI PHẠM:
+1. Tuyệt đối KHÔNG nhắc đến các từ ngữ kỹ thuật như: "Groq", "API", "AI", "Gemini", "Sheet", "CSV", "LLM", "Prompt", "Prompting". Hãy tự xưng là "Hệ thống SmartSun" hoặc "Trợ lý SmartSun".
+2. Trong danh sách gợi ý Trường Đào Tạo, bắt buộc phải phân chia rõ ràng thành 3 Miền: **Miền Bắc**, **Miền Trung**, **Miền Nam**.
+3. Luôn đính kèm lưu ý: "Mức điểm chuẩn và học phí chi tiết các ngành vui lòng tra cứu trực tiếp tại Cổng thông tin tuyển sinh chính thức của từng trường."
+4. Nếu yêu cầu bị giới hạn (chế độ thử nghiệm), chỉ đưa ra khoảng 50% thông tin cốt lõi ban đầu rồi dừng lại ngắt câu tự nhiên.`;
+
+            const payload = {
+                model: "llama-3.3-70b-versatile",
+                messages: [
+                    { role: "system", content: systemRoleInstruction },
+                    { role: "user", content: promptText }
+                ],
+                temperature: 0.7,
+                max_tokens: isTruncateExpected ? 700 : 3200
+            };
+
+            const response = await fetch(endpoint, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${getSystemCoreToken()}`
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+                throw new Error("Lỗi kết nối máy chủ dịch vụ.");
+            }
+
+            const data = await response.json();
+            return data.choices?.[0]?.message?.content || "Không nhận được phản hồi từ hệ thống.";
+        }
+
+        async function handleAnalysisSubmit(e) {
+            e.preventDefault();
+
+            // Check daily limit for unactivated mode
+            if (!isSystemActivated) {
+                const used = getTrialUsage();
+                if (used >= DAILY_TRIAL_LIMIT) {
+                    alert("Bạn đã dùng hết 10 lượt phân tích thử nghiệm của ngày hôm nay. Vui lòng nhập Mã Kích Hoạt để sử dụng không giới hạn hoặc quay lại vào ngày mai!");
+                    openAuthModal();
+                    return;
+                }
+            }
+
+            // Gather Form inputs
+            const interests = document.getElementById('interests').value;
+            const strongSubjects = document.getElementById('strongSubjects').value;
+            const targetExamBlocks = document.getElementById('targetExamBlocks').value;
+            const academicRank = document.getElementById('academicRank').value;
+            const foreignLang = document.getElementById('foreignLang').value;
+            const softSkills = document.getElementById('softSkills').value;
+            const personality = document.getElementById('personality').value;
+            const workStyle = document.getElementById('workStyle').value;
+            const workEnvGoal = document.getElementById('workEnvGoal').value;
+            const familyOrientation = document.getElementById('familyOrientation').value;
+            const priorityValue = document.getElementById('priorityValue').value;
+            const regionPreference = document.getElementById('regionPreference').value;
+            const financialCondition = document.getElementById('financialCondition').value;
+            const healthCondition = document.getElementById('healthCondition').value;
+
+            // Show loading UI
+            document.getElementById('resultPlaceholder').classList.add('hidden');
+            document.getElementById('resultDisplay').classList.add('hidden');
+            document.getElementById('resultLoading').classList.remove('hidden');
+
+            // Scroll to view
+            document.getElementById('resultLoading').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+            // Build Comprehensive Prompt
+            const prompt = `
+Phân tích chi tiết & chuyên sâu định hướng ngành nghề cho học sinh dựa trên các tiêu chí sau:
+1. Sở thích & Đam mê: ${interests}
+2. Môn học thế mạnh: ${strongSubjects}
+3. Khối thi / Tổ hợp dự kiến: ${targetExamBlocks}
+4. Học lực trung bình: ${academicRank}
+5. Trình độ Ngoại ngữ: ${foreignLang}
+6. Kỹ năng mềm: ${softSkills}
+7. Tính cách: ${personality}
+8. Phong cách làm việc: ${workStyle}
+9. Môi trường làm việc kỳ vọng: ${workEnvGoal}
+10. Định hướng gia đình: ${familyOrientation}
+11. Giá trị ưu tiên cá nhân: ${priorityValue}
+12. Miền ưu tiên học tập: ${regionPreference}
+13. Điều kiện tài chính gia đình: ${financialCondition}
+14. Sức khỏe & Đặc thù: ${healthCondition}
+
+Yêu cầu xuất báo cáo định dạng Markdown đẹp mắt, chi tiết, minh họa rõ ràng bằng bảng hoặc gạch đầu dòng với 8 phần chính sau:
+
+### 1. Đánh Giá Ma Trận IKIGAI Bản Thân
+- Phân tích sự kết hợp giữa: Đam mê - Thế mạnh học tập - Khối thi - Nhu cầu thị trường.
+- Điểm mạnh vượt trội & Điểm cần cải thiện gấp.
+
+### 2. Phân Tích Đánh Giá Khối Thi & Môn Học Thế Mạnh
+- Nhận xét tính khả thi của khối thi (${targetExamBlocks}) so với mục tiêu ngành nghề.
+- Gợi ý bổ sung tổ hợp môn dự phòng phù hợp để gia tăng cơ hội đỗ.
+
+### 3. Top 3 - 4 Ngành Nghề Đột Phá & Tương Hợp Cao Nhất
+- Tên ngành, Tỷ lệ phù hợp (%), Lý do chi tiết.
+- Tiềm năng phát triển & Mức độ rủi ro bị công nghệ/AI ảnh hưởng.
+
+### 4. Gợi Ý Các Trường Đào Tạo Uy Tín Theo 3 Miền
+Phân chia bắt buộc 3 mục:
+- **Miền Bắc**: (Các trường đại học hàng đầu)
+- **Miền Trung**: (Các trường uy tín khu vực)
+- **Miền Nam**: (Các trường nổi tiếng)
+*(Lưu ý: Mức điểm chuẩn và học phí chi tiết các ngành vui lòng tra cứu trực tiếp tại Cổng thông tin tuyển sinh chính thức của từng trường)*
+
+### 5. Lộ Trình Đào Tạo 4 Năm Đại Học & Kỹ Năng Cần Tích Lũy
+- **Năm 1-2**: Kiến thức đại cương, ngoại ngữ, kỹ năng nền tảng.
+- **Năm 3-4**: Kiến thức chuyên sâu, thực tập doanh nghiệp, chứng chỉ nghề nghiệp.
+
+### 6. Vị Trí Việc Làm, Mức Lương Dự Kiến & Lộ Trình Thăng Tiến
+- Các vị trí khởi điểm (Fresher/Junior).
+- Mức lương tham khảo thị trường Việt Nam & Lộ trình 3 - 5 năm sau tốt nghiệp.
+
+### 7. Kế Hoạch Hành Động Theo Cấp Lớp (Dành Cho Học Sinh)
+- **Học sinh Lớp 10 & 11**: Cần tập trung chuẩn bị gì?
+- **Học sinh Lớp 12**: Chiến lược ôn thi & Đặt nguyện vọng thông minh.
+
+### 8. Lời Khuyên Ứng Xử Với Định Hướng Gia Đình
+- Lời khuyên cụ thể dựa trên thông tin định hướng gia đình (${familyOrientation}).
+`;
+
+            try {
+                // If not activated, truncate answer to create curiosity
+                const isTruncated = !isSystemActivated;
+                let analysisText = await querySmartSunEngine(prompt, isTruncated);
+
+                // Render Markdown output
+                const outputEl = document.getElementById('markdownOutput');
+                outputEl.innerHTML = marked.parse(analysisText);
+
+                // Show/Hide Teaser Box based on activation state
+                const teaserBox = document.getElementById('truncatedTeaserBox');
+                if (isTruncated) {
+                    teaserBox.classList.remove('hidden');
+                    incrementTrialUsage(); // Increment daily count for trial mode
+                } else {
+                    teaserBox.classList.add('hidden');
+                }
+
+                document.getElementById('resultLoading').classList.add('hidden');
+                document.getElementById('resultDisplay').classList.remove('hidden');
+
+            } catch (error) {
+                alert("Đã xảy ra lỗi trong quá trình kết nối phân tích. Vui lòng thử lại sau.");
+                document.getElementById('resultLoading').classList.add('hidden');
+                document.getElementById('resultPlaceholder').classList.remove('hidden');
+            }
+        }
+
+        function sendQuickChat(questionText) {
+            const inputEl = document.getElementById('chatInput');
+            inputEl.value = questionText;
+            const fakeEvent = { preventDefault: () => {} };
+            handleSendMessage(fakeEvent);
+        }
+
+        async function handleSendMessage(e) {
+            e.preventDefault();
+            const inputEl = document.getElementById('chatInput');
+            const userMsg = inputEl.value.trim();
+            if (!userMsg) return;
+
+            const messagesContainer = document.getElementById('chatMessages');
+
+            // Check chat limit for unactivated trial mode
+            if (!isSystemActivated) {
+                const used = getChatTrialUsage();
+                if (used >= DAILY_CHAT_TRIAL_LIMIT) {
+                    const limitBubble = document.createElement('div');
+                    limitBubble.className = "flex gap-2.5";
+                    limitBubble.innerHTML = `
+                        <div class="w-7 h-7 rounded-lg bg-rose-500/20 border border-rose-500/30 text-rose-400 flex-shrink-0 flex items-center justify-center">
+                            <i class="fa-solid fa-lock text-xs"></i>
+                        </div>
+                        <div class="bg-rose-950/60 border border-rose-500/30 p-3 rounded-2xl rounded-tl-none text-rose-200 max-w-[85%] leading-relaxed text-xs">
+                            ⚠️ <strong>Hết lượt hỏi trong ngày!</strong> Ở Chế độ Khám Phá, bạn chỉ được hỏi tối đa <strong>5 lần/ngày</strong>. Vui lòng kích hoạt mã để trò chuyện không giới hạn.
+                            <div class="mt-2">
+                                <button onclick="openAuthModal()" class="px-3 py-1.5 rounded-lg sun-button text-slate-950 font-bold text-[11px] inline-flex items-center gap-1">
+                                    <i class="fa-solid fa-key"></i> Kích Hoạt Ngay
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    messagesContainer.appendChild(limitBubble);
+                    inputEl.value = '';
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                    return;
+                }
+            }
+
+            // Render User Bubble
+            const userBubble = document.createElement('div');
+            userBubble.className = "flex gap-2.5 justify-end";
+            userBubble.innerHTML = `
+                <div class="bg-amber-500 text-slate-950 p-3 rounded-2xl rounded-tr-none font-medium max-w-[85%] leading-relaxed">
+                    ${escapeHtml(userMsg)}
+                </div>
+            `;
+            messagesContainer.appendChild(userBubble);
+            inputEl.value = '';
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+            // Increment chat count for trial users
+            if (!isSystemActivated) {
+                incrementChatTrialUsage();
+            }
+
+            // Render Loading Indicator
+            const loadingBubble = document.createElement('div');
+            loadingBubble.className = "flex gap-2.5";
+            loadingBubble.id = "chatLoadingIndicator";
+            loadingBubble.innerHTML = `
+                <div class="w-7 h-7 rounded-lg bg-amber-500/20 border border-amber-500/30 text-amber-400 flex-shrink-0 flex items-center justify-center">
+                    <i class="fa-solid fa-sun text-xs animate-spin"></i>
+                </div>
+                <div class="bg-slate-800/90 border border-slate-700 p-3 rounded-2xl rounded-tl-none text-slate-400 italic">
+                    SmartSun Assistant đang soạn câu trả lời...
+                </div>
+            `;
+            messagesContainer.appendChild(loadingBubble);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+            try {
+                const responseText = await querySmartSunEngine(`Người dùng hỏi trong chatbot tư vấn hướng nghiệp: "${userMsg}". Hãy trả lời chi tiết, cụ thể, dễ hiểu, theo dạng gạch đầu dòng rõ ràng để giúp học sinh có cái nhìn sâu sắc.`);
+                
+                const loader = document.getElementById('chatLoadingIndicator');
+                if (loader) loader.remove();
+
+                const botBubble = document.createElement('div');
+                botBubble.className = "flex gap-2.5";
+                botBubble.innerHTML = `
+                    <div class="w-7 h-7 rounded-lg bg-amber-500/20 border border-amber-500/30 text-amber-400 flex-shrink-0 flex items-center justify-center">
+                        <i class="fa-solid fa-sun text-xs"></i>
+                    </div>
+                    <div class="bg-slate-800/90 border border-slate-700 p-3 rounded-2xl rounded-tl-none text-slate-200 max-w-[85%] leading-relaxed">
+                        ${marked.parse(responseText)}
+                    </div>
+                `;
+                messagesContainer.appendChild(botBubble);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+            } catch (err) {
+                const loader = document.getElementById('chatLoadingIndicator');
+                if (loader) loader.remove();
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.innerText = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>
