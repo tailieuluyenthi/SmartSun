@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartSun Slide Creator AI - Cổng Đăng Nhập & Kích Hoạt Bản Quyền Online</title>
+  <meta name="description" content="Hệ thống tra cứu và kích hoạt bản quyền thương mại SmartSun Slide Creator AI. Tự động trích xuất mã thiết bị, kiểm tra mật khẩu và đồng bộ dữ liệu thời gian thực.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-dark: #060913;
+      --bg-card: #0f172a;
+      --bg-card-hover: #1e293b;
+      --border-cyan: rgba(6, 182, 212, 0.3);
+      --border-purple: rgba(139, 92, 246, 0.3);
+      
+      --purple: #8b5cf6;
+      --cyan: #06b6d4;
+      --emerald: #10b981;
+      --gold: #f59e0b;
+      --rose: #f43f5e;
+
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+
+      --radius-lg: 20px;
+      --radius-md: 12px;
+      --shadow-glow: 0 10px 40px 0 rgba(139, 92, 246, 0.25);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 30px 20px;
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(139, 92, 246, 0.15) 0%, transparent 45%),
+        radial-gradient(circle at 85% 85%, rgba(6, 182, 212, 0.15) 0%, transparent 45%);
+      background-attachment: fixed;
+    }
+
+    .header-logo {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .logo-badge {
+      width: 56px;
+      height: 56px;
+      background: linear-gradient(135deg, var(--purple) 0%, var(--cyan) 100%);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-glow);
+    }
+
+    .logo-title {
+      font-size: 1.8rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #ffffff 30%, #a5f3fc 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .logo-sub {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      max-width: 1050px;
+      width: 100%;
+    }
+
+    @media (max-width: 860px) {
+      .main-grid { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-purple);
+      border-radius: var(--radius-lg);
+      padding: 30px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--purple), var(--cyan));
+    }
+
+    h2 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    p.desc {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #a5b4fc;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+
+    input[type="text"], input[type="password"] {
+      width: 100%;
+      padding: 14px;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--border-cyan);
+      border-radius: var(--radius-md);
+      color: #fff;
+      font-size: 0.95rem;
+      font-family: 'JetBrains Mono', monospace;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    input[type="text"]:focus, input[type="password"]:focus {
+      border-color: var(--cyan);
+      box-shadow: 0 0 12px rgba(6, 182, 212, 0.3);
+    }
+
+    .hwid-display-box {
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px dashed var(--gold);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .hwid-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #fde047;
+    }
+
+    .btn-copy {
+      background: rgba(245, 158, 11, 0.2);
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-copy:hover {
+      background: var(--gold);
+      color: #000;
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, var(--purple) 0%, #6d28d9 100%);
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: var(--shadow-glow);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .btn-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(139, 92, 246, 0.4);
+    }
+
+    .result-box {
+      margin-top: 20px;
+      padding: 16px;
+      border-radius: var(--radius-md);
+      font-size: 0.9rem;
+      display: none;
+    }
+
+    .result-success {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid var(--emerald);
+      color: #a7f3d0;
+    }
+
+    .result-error {
+      background: rgba(244, 63, 94, 0.15);
+      border: 1px solid var(--rose);
+      color: #fecdd3;
+    }
+
+    .step-list {
+      list-style: none;
+      counter-reset: step;
+    }
+
+    .step-list li {
+      position: relative;
+      padding-left: 36px;
+      margin-bottom: 16px;
+      font-size: 0.9rem;
+      color: var(--text-main);
+      line-height: 1.5;
+    }
+
+    .step-list li::before {
+      counter-increment: step;
+      content: counter(step);
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 24px;
+      height: 24px;
+      background: var(--cyan);
+      color: #000;
+      font-weight: 800;
+      font-size: 0.75rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .badge-status {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .badge-live {
+      background: rgba(16, 185, 129, 0.2);
+      color: var(--emerald);
+      border: 1px solid var(--emerald);
+    }
+
+    footer {
+      margin-top: 40px;
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header Branding -->
+  <div class="header-logo">
+    <div class="logo-badge">
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+    </div>
+    <div>
+      <div class="logo-title">SmartSun Slide Creator AI</div>
+      <div class="logo-sub">Cổng Xác Thực Bản Quyền Thương Mại & Tra Cứu Trực Tuyến 2026</div>
+    </div>
+  </div>
+
+  <!-- Content Grid -->
+  <div class="main-grid">
+
+    <!-- Card 1: Form Kiểm Tra Đăng Nhập & Kích Hoạt -->
+    <div class="card">
+      <span class="badge-status badge-live">🟢 GOOGLE SHEET CSV LIVE SYNC</span>
+      <h2>🔐 TRA CỨU & XÁC THỰC BẢN QUYỀN</h2>
+      <p class="desc">Nhập <b>Mã Thiết Bị (HWID)</b> và <b>Mật Khẩu</b> để tra cứu và kiểm tra quyền truy cập trực tiếp từ cơ sở dữ liệu cloud.</p>
+
+      <form id="auth-form" onsubmit="verifyOnlineAuth(event)">
+
+        <div class="form-group">
+          <label>💻 Mã Thiết Bị Của Bạn (HWID):</label>
+          <div class="hwid-display-box">
+            <span class="hwid-text" id="web-hwid-display">Đang tự tạo...</span>
+            <button type="button" class="btn-copy" onclick="copyWebHwid()">📋 Sao Chép</button>
+          </div>
+          <input type="text" id="input-hwid" placeholder="HWID-XXXX-YYYY-ZZZZ" autocomplete="off" required>
+        </div>
+
+        <div class="form-group">
+          <label>🔑 Mật Khẩu Đăng Nhập (Password):</label>
+          <input type="password" id="input-password" placeholder="Nhập mật khẩu bản quyền của bạn..." autocomplete="off" required>
+        </div>
+
+        <button type="submit" class="btn-submit" id="btn-submit-verify">🚀 KIỂM TRA ĐĂNG NHẬP THỜI GIAN THỰC</button>
+
+      </form>
+
+      <div id="result-box" class="result-box"></div>
+    </div>
+
+    <!-- Card 2: Hướng Dẫn & Tải Sản Phẩm -->
+    <div class="card">
+      <h2>💡 HƯỚNG DẪN ĐĂNG NHẬP SỬ DỤNG</h2>
+      <p class="desc">Vui lòng thực hiện theo các bước dưới đây để kích hoạt phần mềm <b>SmartSun_Slide_Creator.exe</b> bản thương mại:</p>
+
+      <ul class="step-list">
+        <li><b>Tải Phần Mềm:</b> Tải về file thực thi <code>SmartSun_Slide_Creator.exe</code> hoặc gói thương mại ZIP.</li>
+        <li><b>Lấy Mã Thiết Bị:</b> Khởi chạy phần mềm, ứng dụng sẽ tự động trích xuất mã thiết bị máy tính của bạn (VD: <code>HWID-XXXX-YYYY-ZZZZ</code>).</li>
+        <li><b>Đăng Ký Mật Khẩu:</b> Nhấn nút <b>📋 Sao Chép</b> mã thiết bị gửi cho Ban Quản Trị SmartSun để được cấp mật khẩu.</li>
+        <li><b>Kích Hoạt Vĩnh Viễn:</b> Nhập mật khẩu vào ô Đăng Nhập trên phần mềm để mở khóa toàn bộ tính năng tạo PowerPoint AI tự động!</li>
+      </ul>
+
+      <div style="margin-top: 24px; padding-top: 18px; border-top: 1px dashed var(--border-cyan);">
+        <h3 style="font-size: 0.95rem; color: var(--gold); margin-bottom: 10px;">📦 TẢI SẢN PHẨM THƯƠNG MẠI:</h3>
+        <a href="SmartSun_Slide_Creator.exe" download style="display: block; text-align: center; background: rgba(6, 182, 212, 0.2); border: 1px solid var(--cyan); color: var(--cyan); text-decoration: none; padding: 12px; border-radius: 10px; font-weight: 700;">
+          ⬇️ Tải SmartSun_Slide_Creator.exe (Bản Đơn Lệ)
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    &copy; 2026 SmartSun Education & AI Technology Solutions. Tất cả quyền được bảo lưu.
+  </footer>
+
+  <script>
+    const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ5caItjqvz4wVa5eZGFx_Tsm-8KM8ImX7ALjhGMesCS7jQF47W5WASJruFNfOKUxS1vO_OU_5twdpt/pub?output=csv";
+    let autoHwid = "";
+
+    window.addEventListener('DOMContentLoaded', () => {
+      let saved = localStorage.getItem('smartsun_web_hwid');
+      if (!saved) {
+        saved = "HWID-" + Math.random().toString(36).substr(2, 4).toUpperCase() + "-" + Math.random().toString(36).substr(2, 4).toUpperCase() + "-" + Math.random().toString(36).substr(2, 4).toUpperCase();
+        localStorage.setItem('smartsun_web_hwid', saved);
+      }
+      autoHwid = saved;
+      document.getElementById('web-hwid-display').innerText = autoHwid;
+      document.getElementById('input-hwid').value = autoHwid;
+    });
+
+    function copyWebHwid() {
+      const val = document.getElementById('input-hwid').value || autoHwid;
+      navigator.clipboard.writeText(val).then(() => {
+        alert("📋 Đã sao chép mã HWID: " + val);
+      });
+    }
+
+    function parseCSV(text) {
+      const lines = text.split('\n').map(l => l.trim()).filter(l => l);
+      return lines.map(line => {
+        const parts = line.split(',');
+        return parts.map(p => p.replace(/^["']|["']$/g, '').trim());
+      });
+    }
+
+    async function verifyOnlineAuth(e) {
+      e.preventDefault();
+      const hwidInput = document.getElementById('input-hwid').value.trim().toUpperCase();
+      const passInput = document.getElementById('input-password').value.trim();
+      const resBox = document.getElementById('result-box');
+      const submitBtn = document.getElementById('btn-submit-verify');
+
+      if (!hwidInput || !passInput) {
+        resBox.className = "result-box result-error";
+        resBox.style.display = "block";
+        resBox.innerHTML = "❌ Vui lòng nhập đầy đủ cả <b>Mã Thiết Bị</b> và <b>Mật Khẩu</b>!";
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.innerText = "⏳ Đang kết nối tới Google Sheets CSV...";
+      resBox.style.display = "none";
+
+      try {
+        const resp = await fetch(CSV_URL, { cache: 'no-store' });
+        if (!resp.ok) throw new Error("Không thể kết nối đến máy chủ dữ liệu Google Sheets!");
+
+        const csvText = await resp.text();
+        const rows = parseCSV(csvText);
+
+        let isMatch = false;
+        let matchedData = {};
+
+        for (let i = 0; i < rows.length; i++) {
+          const row = rows[i];
+          if (row.length < 2) continue;
+
+          const colHwid = (row[0] || '').trim().toUpperCase();
+          const colPass = (row[1] || '').trim();
+
+          if (colHwid === "MÃ THIẾT BỊ" || colPass === "KEY ĐĂNG NHẬP") continue;
+
+          if (colHwid === hwidInput && colPass === passInput) {
+            isMatch = true;
+            matchedData = {
+              app: row[2] || "SmartSun Slide Creator",
+              teacher: row[3] || "Giáo viên SmartSun",
+              expiration: row[4] || "Vĩnh viễn"
+            };
+            break;
+          }
+        }
+
+        resBox.style.display = "block";
+        if (isMatch) {
+          resBox.className = "result-box result-success";
+          resBox.innerHTML = `
+            <b style="font-size:1.05rem;">🎉 XÁC THỰC THÀNH CÔNG (MATCH BOTH)!</b><br>
+            👤 <b>Người sở hữu:</b> ${matchedData.teacher}<br>
+            📱 <b>Ứng dụng:</b> ${matchedData.app}<br>
+            ⏰ <b>Thời hạn bản quyền:</b> ${matchedData.expiration}<br>
+            ✅ <i>Mã thiết bị và mật khẩu khớp hoàn toàn 100% với hệ thống Google Sheet!</i>
+          `;
+        } else {
+          resBox.className = "result-box result-error";
+          resBox.innerHTML = `
+            <b>❌ XÁC THỰC THẤT BẠI!</b><br>
+            Mã thiết bị <code>${hwidInput}</code> hoặc mật khẩu nhập vào không chính xác.<br>
+            <i>Yêu cầu phải khớp chính xác cả 2 cột trên sheet Google Admin.</i>
+          `;
+        }
+      } catch (err) {
+        resBox.className = "result-box result-error";
+        resBox.style.display = "block";
+        resBox.innerHTML = "❌ Lỗi kết nối Google Sheet: " + err.message;
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerText = "🚀 KIỂM TRA ĐĂNG NHẬP THỜI GIAN THỰC";
+      }
+    }
+  </script>
+</body>
+</html>
